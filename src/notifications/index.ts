@@ -7,8 +7,8 @@ export function parseTimeString(time: string): { hour: number; minute: number } 
 
 export function buildDailyTriggers(
   times: string[]
-): Array<{ hour: number; minute: number; repeats: true }> {
-  return times.map((t) => ({ ...parseTimeString(t), repeats: true as const }));
+): Array<{ hour: number; minute: number }> {
+  return times.map((t) => parseTimeString(t));
 }
 
 export async function requestPermissions(): Promise<boolean> {
@@ -26,7 +26,7 @@ export async function scheduleNotifications(times: string[]): Promise<void> {
         body: 'ちょっとほぐしてリフレッシュしましょう',
         data: { screen: 'Session' },
       },
-      trigger: { hour, minute, repeats: true },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour, minute },
     });
   }
 }

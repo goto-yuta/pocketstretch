@@ -8,10 +8,10 @@ describe('parseTimeString', () => {
 });
 
 describe('buildDailyTriggers', () => {
-  it('returns one trigger per time string with repeats:true', () => {
+  it('returns one trigger per time string', () => {
     const triggers = buildDailyTriggers(['08:00', '12:30', '18:00']);
     expect(triggers).toHaveLength(3);
-    expect(triggers[0]).toEqual({ hour: 8, minute: 0, repeats: true });
-    expect(triggers[2]).toEqual({ hour: 18, minute: 0, repeats: true });
+    expect(triggers[0]).toEqual({ hour: 8, minute: 0 });
+    expect(triggers[2]).toEqual({ hour: 18, minute: 0 });
   });
 });
