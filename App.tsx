@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as Notifications from 'expo-notifications';
+import React, { useEffect, useRef } from 'react';
+import RootNavigator from './src/navigation';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const responseListener = useRef<Notifications.Subscription>();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(() => {
+      // アプリがフォアグラウンドに来るだけでOK — navigatorが状態に基づき制御する
+    });
+    return () => {
+      responseListener.current?.remove();
+    };
+  }, []);
+
+  return <RootNavigator />;
+}
