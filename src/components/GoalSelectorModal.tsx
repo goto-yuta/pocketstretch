@@ -69,7 +69,10 @@ export default function GoalSelectorModal({ visible, onClose, onStart }: Props) 
 
   function handleStart() {
     if (filteredStretches.length === 0) return;
-    onStart(filteredStretches.map((s) => s.id));
+    const ids = filteredStretches.map((s) => s.id);
+    setSelectedGoals([]);
+    setSelectedDuration('any');
+    onStart(ids);
   }
 
   function handleClose() {
