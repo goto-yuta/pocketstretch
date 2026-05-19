@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import GoalSelectorModal from '../components/GoalSelectorModal';
 import { ALL_STRETCHES } from '../data/stretches';
 import { useUserStore } from '../store/useUserStore';
 import { BodyPart, RootStackParamList, Scene, Stretch } from '../types';
@@ -37,15 +38,25 @@ export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { bodyParts, scene } = useUserStore();
   const recommended = getRecommended(ALL_STRETCHES, bodyParts, scene);
+  const [modalVisible, setModalVisible] = useState(false);
 
   function startSession(stretches: Stretch[]) {
     if (stretches.length === 0) return;
     navigation.navigate('Session', { stretchIds: stretches.map((s) => s.id) });
   }
 
+  function handleGoalStart(stretchIds: string[]) {
+    setModalVisible(false);
+    navigation.navigate('Session', { stretchIds });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <Pressable style={styles.goalButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.goalButtonText}>今日の気分で選ぶ →</Text>
+        </Pressable>
+
         <Text style={styles.heading}>今日のおすすめ</Text>
         {recommended.map((s) => (
           <StretchCard key={s.id} stretch={s} onPress={() => startSession([s])} />
@@ -82,12 +93,27 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
+
+      <GoalSelectorModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onStart={handleGoalStart}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
+  goalButton: {
+    margin: 16,
+    marginBottom: 0,
+    backgroundColor: '#4CAF50',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  goalButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   heading: { fontSize: 20, fontWeight: 'bold', margin: 16 },
   sectionTitle: { fontSize: 17, fontWeight: 'bold', marginHorizontal: 16, marginTop: 24, marginBottom: 8 },
   card: { flexDirection: 'row', margin: 8, marginHorizontal: 16, borderRadius: 12, backgroundColor: '#f5f5f5', overflow: 'hidden' },
