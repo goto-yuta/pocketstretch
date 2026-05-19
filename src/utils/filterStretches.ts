@@ -75,10 +75,10 @@ export function filterByGoals(stretches: Stretch[], goals: Goal[]): Stretch[] {
   }
 
   return stretches.filter((s) => {
-    if (mergedBodyParts.size > 0 && !Array.from(mergedBodyParts).some((bp) => s.bodyParts.includes(bp))) return false;
+    if (mergedBodyParts.size > 0 && !s.bodyParts.some((bp) => mergedBodyParts.has(bp))) return false;
     if (maxDifficulty !== undefined && s.difficulty > maxDifficulty) return false;
     if (minDifficulty !== undefined && s.difficulty < minDifficulty) return false;
-    if (mergedScenes.size > 0 && !Array.from(mergedScenes).some((sc) => s.scenes.includes(sc))) return false;
+    if (mergedScenes.size > 0 && !s.scenes.some((sc) => mergedScenes.has(sc))) return false;
     return true;
   });
 }

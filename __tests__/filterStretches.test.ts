@@ -112,4 +112,14 @@ describe('applyDurationFilter', () => {
   it('returns empty for empty input', () => {
     expect(applyDurationFilter([], '5min')).toHaveLength(0);
   });
+
+  it('skips stretches that do not fit but continues checking shorter ones', () => {
+    const mixed: Stretch[] = [
+      { id: 'big', nameJa: 'big', descriptionJa: '', image: 0, durationSeconds: 200, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
+      { id: 'small', nameJa: 'small', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
+    ];
+    // 3min=180s: big(200) > 180 → skip, small(60) ≤ 180 → include
+    const result = applyDurationFilter(mixed, '3min');
+    expect(result.map(s => s.id)).toEqual(['small']);
+  });
 });
