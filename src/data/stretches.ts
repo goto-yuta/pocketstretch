@@ -242,7 +242,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'ankle-rotation',
     nameJa: '足首回し（むくみ解消）',
-    descriptionJa: '座ったまま足首をゆっくり大きく回し、脚のむくみを促進する。',
+    descriptionJa: '座ったまま足首をゆっくり大きく回し、脚のむくみを解消する。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
