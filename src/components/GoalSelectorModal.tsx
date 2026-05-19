@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Dimensions,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -9,6 +11,8 @@ import {
 import { ALL_STRETCHES } from '../data/stretches';
 import { DurationFilter, Goal } from '../types';
 import { applyDurationFilter, filterByGoals } from '../utils/filterStretches';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface GoalOption {
   value: Goal;
@@ -83,57 +87,59 @@ export default function GoalSelectorModal({ visible, onClose, onStart }: Props) 
     >
       <Pressable style={styles.overlay} onPress={handleClose}>
         <Pressable style={styles.sheet}>
-          <Text style={styles.title}>今日はどうする？</Text>
+          <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+            <Text style={styles.title}>今日はどうする？</Text>
 
-          <Text style={styles.sectionLabel}>悩み・目的（複数OK）</Text>
-          <View style={styles.chipRow}>
-            {GOAL_OPTIONS.map((opt) => {
-              const selected = selectedGoals.includes(opt.value);
-              return (
-                <Pressable
-                  key={opt.value}
-                  style={[styles.chip, selected && styles.chipSelected]}
-                  onPress={() => toggleGoal(opt.value)}
-                >
-                  <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
-                    {opt.emoji} {opt.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+            <Text style={styles.sectionLabel}>悩み・目的（複数OK）</Text>
+            <View style={styles.chipRow}>
+              {GOAL_OPTIONS.map((opt) => {
+                const selected = selectedGoals.includes(opt.value);
+                return (
+                  <Pressable
+                    key={opt.value}
+                    style={[styles.chip, selected && styles.chipSelected]}
+                    onPress={() => toggleGoal(opt.value)}
+                  >
+                    <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+                      {opt.emoji} {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
-          <Text style={styles.sectionLabel}>時間</Text>
-          <View style={styles.durationRow}>
-            {DURATION_OPTIONS.map((opt) => {
-              const selected = selectedDuration === opt.value;
-              return (
-                <Pressable
-                  key={opt.value}
-                  style={[styles.durationChip, selected && styles.chipSelected]}
-                  onPress={() => setSelectedDuration(opt.value)}
-                >
-                  <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
-                    {opt.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+            <Text style={styles.sectionLabel}>時間</Text>
+            <View style={styles.durationRow}>
+              {DURATION_OPTIONS.map((opt) => {
+                const selected = selectedDuration === opt.value;
+                return (
+                  <Pressable
+                    key={opt.value}
+                    style={[styles.durationChip, selected && styles.chipSelected]}
+                    onPress={() => setSelectedDuration(opt.value)}
+                  >
+                    <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
-          {filteredStretches.length === 0 ? (
-            <Text style={styles.emptyText}>条件に合うストレッチが見つかりません</Text>
-          ) : (
-            <Pressable style={styles.startButton} onPress={handleStart}>
-              <Text style={styles.startButtonText}>
-                おすすめを見る（{filteredStretches.length}件）
-              </Text>
+            {filteredStretches.length === 0 ? (
+              <Text style={styles.emptyText}>条件に合うストレッチが見つかりません</Text>
+            ) : (
+              <Pressable style={styles.startButton} onPress={handleStart}>
+                <Text style={styles.startButtonText}>
+                  おすすめを見る（{filteredStretches.length}件）
+                </Text>
+              </Pressable>
+            )}
+
+            <Pressable style={styles.skipButton} onPress={handleClose}>
+              <Text style={styles.skipText}>スキップ</Text>
             </Pressable>
-          )}
-
-          <Pressable style={styles.skipButton} onPress={handleClose}>
-            <Text style={styles.skipText}>スキップ</Text>
-          </Pressable>
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 24,
     paddingBottom: 40,
+    maxHeight: SCREEN_HEIGHT * 0.85,
   },
   title: {
     fontSize: 20,
