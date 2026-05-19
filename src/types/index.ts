@@ -38,3 +38,18 @@ export type MainTabParamList = {
   Home: undefined;
   Settings: undefined;
 };
+
+export type Goal =
+  | 'shoulder-stiffness'
+  | 'neck-stiffness'
+  | 'lower-back-pain'
+  | 'drowsiness'
+  | 'eye-strain'
+  | 'leg-swelling'
+  | 'relax'
+  | 'focus'
+  | 'warmup'
+  | 'cooldown'
+  | 'mood-change';
+
+export type DurationFilter = '3min' | '5min' | '10min' | 'any';
