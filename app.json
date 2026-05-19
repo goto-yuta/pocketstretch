@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "firstver",
-    "slug": "firstver",
+    "name": "PocketStretch",
+    "slug": "pocketstretch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pocketstretch",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.pocketstretch",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -35,6 +40,12 @@
           "sounds": []
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9c2efbfc-fb09-4137-b587-f09a22693ea4"
+      }
+    },
+    "owner": "gotoyuta"
   }
 }
