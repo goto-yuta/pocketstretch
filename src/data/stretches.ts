@@ -115,7 +115,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'calf',
     nameJa: 'ふくらはぎ伸ばし',
-    descriptionJa: '壁に手をついてアキレス腱とふくらはぎを伸ばす。',
+    descriptionJa: '壁に手をついて腓腹筋とヒラメ筋（ふくらはぎの筋肉）を伸ばす。膝を伸ばすと腓腹筋、軽く曲げるとヒラメ筋が中心にストレッチされる。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 2,
