@@ -81,6 +81,21 @@ describe('getCompletedMinutes', () => {
     expect(result).toBe(1);
   });
 
+  it('rounds up partial minutes', () => {
+    // chin-tuck(30×2=60s) + one stretch with 10s×1=10s → 70s → ceil → 2min
+    const shortStretch: Stretch = {
+      id: 'short', nameJa: '', descriptionJa: '', image: 0,
+      durationSeconds: 10, difficulty: 1, bodyParts: ['neck'],
+      scenes: ['office'], steps: [], recommendedSets: 1,
+    };
+    const result = getCompletedMinutes(
+      ['chin-tuck', 'short'],
+      ['chin-tuck', 'short'],
+      [...mockStretches, shortStretch],
+    );
+    expect(result).toBe(2); // 70s → ceil(70/60) = 2
+  });
+
   it('returns 0 when nothing completed', () => {
     expect(getCompletedMinutes([], ['chin-tuck'], mockStretches)).toBe(0);
   });

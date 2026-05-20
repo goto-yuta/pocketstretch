@@ -47,8 +47,8 @@ export function getPrescription(
   }
 
   const totalSeconds = stretchIds.reduce((sum, id) => {
-    const s = stretchMap.get(id)!;
-    return sum + s.durationSeconds * s.recommendedSets;
+    const s = stretchMap.get(id);
+    return s ? sum + s.durationSeconds * s.recommendedSets : sum;
   }, 0);
 
   const label = bodyParts.map((bp) => BODY_LABEL[bp]).join(' + ');
