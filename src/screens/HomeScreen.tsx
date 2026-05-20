@@ -1,13 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DailyMustCard from '../components/DailyMustCard';
 import GoalSelectorModal from '../components/GoalSelectorModal';
 import { ALL_STRETCHES } from '../data/stretches';
 import { useUserStore } from '../store/useUserStore';
-import { BodyPart, RootStackParamList, Scene, Stretch } from '../types';
-import { filterStretches, getRecommended } from '../utils/filterStretches';
+import { BodyPart, RootStackParamList, Scene } from '../types';
+import { getPrescription } from '../utils/prescription';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -21,28 +22,16 @@ const BODY_LABELS: Record<BodyPart, string> = {
   neck: '首', shoulder: '肩', back: '腰', hip: '股関節', leg: '脚',
 };
 
-function StretchCard({ stretch, onPress }: { stretch: Stretch; onPress: () => void }) {
-  return (
-    <Pressable style={styles.card} onPress={onPress}>
-      <Image source={stretch.image} style={styles.cardImage} />
-      <View style={styles.cardBody}>
-        <Text style={styles.cardTitle}>{stretch.nameJa}</Text>
-        <Text style={styles.cardSub} numberOfLines={1}>{stretch.descriptionJa}</Text>
-        <Text style={styles.cardDuration}>{stretch.durationSeconds}秒</Text>
-      </View>
-    </Pressable>
-  );
-}
-
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
-  const { bodyParts, scene } = useUserStore();
-  const recommended = getRecommended(ALL_STRETCHES, bodyParts, scene);
+  const { bodyParts, scene, dailyProgress } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
 
-  function startSession(stretches: Stretch[]) {
-    if (stretches.length === 0) return;
-    navigation.navigate('Session', { stretchIds: stretches.map((s) => s.id) });
+  const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene);
+
+  function startSession(stretchIds: string[]) {
+    if (stretchIds.length === 0) return;
+    navigation.navigate('Session', { stretchIds });
   }
 
   function handleGoalStart(stretchIds: string[]) {
@@ -53,19 +42,17 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        {prescription.stretchIds.length > 0 && (
+          <DailyMustCard
+            prescription={prescription}
+            completedStretchIds={dailyProgress.completedStretchIds}
+            onStart={startSession}
+          />
+        )}
+
         <Pressable style={styles.goalButton} onPress={() => setModalVisible(true)}>
           <Text style={styles.goalButtonText}>今日の気分で選ぶ →</Text>
         </Pressable>
-
-        <Text style={styles.heading}>今日のおすすめ</Text>
-        {recommended.map((s) => (
-          <StretchCard key={s.id} stretch={s} onPress={() => startSession([s])} />
-        ))}
-        {recommended.length > 1 && (
-          <Pressable style={styles.startAll} onPress={() => startSession(recommended)}>
-            <Text style={styles.startAllText}>おすすめ全部やる</Text>
-          </Pressable>
-        )}
 
         <Text style={styles.sectionTitle}>シーンで探す</Text>
         <View style={styles.row}>
@@ -73,7 +60,7 @@ export default function HomeScreen() {
             <Pressable
               key={sc}
               style={styles.sceneChip}
-              onPress={() => startSession(filterStretches(ALL_STRETCHES, { scene: sc }))}
+              onPress={() => startSession(ALL_STRETCHES.filter((s) => s.scenes.includes(sc)).map((s) => s.id))}
             >
               <Text style={styles.sceneChipText}>{SCENE_LABELS[sc]}</Text>
             </Pressable>
@@ -86,7 +73,7 @@ export default function HomeScreen() {
             <Pressable
               key={bp}
               style={styles.bodyChip}
-              onPress={() => startSession(filterStretches(ALL_STRETCHES, { bodyParts: [bp] }))}
+              onPress={() => startSession(ALL_STRETCHES.filter((s) => s.bodyParts.includes(bp)).map((s) => s.id))}
             >
               <Text style={styles.bodyChipText}>{BODY_LABELS[bp]}</Text>
             </Pressable>
@@ -107,26 +94,17 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   goalButton: {
     margin: 16,
-    marginBottom: 0,
+    marginTop: 8,
     backgroundColor: '#4CAF50',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
   },
   goalButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  heading: { fontSize: 20, fontWeight: 'bold', margin: 16 },
-  sectionTitle: { fontSize: 17, fontWeight: 'bold', marginHorizontal: 16, marginTop: 24, marginBottom: 8 },
-  card: { flexDirection: 'row', margin: 8, marginHorizontal: 16, borderRadius: 12, backgroundColor: '#f5f5f5', overflow: 'hidden' },
-  cardImage: { width: 80, height: 80 },
-  cardBody: { flex: 1, padding: 10, justifyContent: 'center' },
-  cardTitle: { fontSize: 15, fontWeight: 'bold', color: '#333' },
-  cardSub: { fontSize: 12, color: '#888', marginTop: 2 },
-  cardDuration: { fontSize: 12, color: '#4CAF50', marginTop: 4 },
+  sectionTitle: { fontSize: 17, fontWeight: 'bold', marginHorizontal: 16, marginTop: 16, marginBottom: 8 },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginHorizontal: 16, marginBottom: 8 },
   sceneChip: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#E8F5E9', borderWidth: 1, borderColor: '#A5D6A7' },
   sceneChipText: { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
   bodyChip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F3E5F5', borderWidth: 1, borderColor: '#CE93D8' },
   bodyChipText: { fontSize: 14, color: '#6A1B9A', fontWeight: '600' },
-  startAll: { margin: 16, backgroundColor: '#4CAF50', borderRadius: 12, paddingVertical: 16, alignItems: 'center' },
-  startAllText: { color: '#fff', fontSize: 17, fontWeight: 'bold' },
 });
