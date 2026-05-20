@@ -15,7 +15,10 @@ export default function SessionScreen() {
   useKeepAwake();
   const route = useRoute<Route>();
   const navigation = useNavigation<Nav>();
-  const stretches = ALL_STRETCHES.filter((s) => route.params.stretchIds.includes(s.id));
+  // mapを使って重複IDを保持（同じストレッチを複数セット実行できる）
+  const stretches = route.params.stretchIds
+    .map((id) => ALL_STRETCHES.find((s) => s.id === id))
+    .filter((s): s is NonNullable<typeof s> => s !== undefined);
   const [index, setIndex] = useState(0);
   const [running, setRunning] = useState(true);
 
@@ -23,7 +26,8 @@ export default function SessionScreen() {
 
   function advance() {
     if (index + 1 >= stretches.length) {
-      navigation.replace('Completion');
+      const uniqueIds = Array.from(new Set(stretches.map((s) => s.id)));
+      navigation.replace('Completion', { completedStretchIds: uniqueIds });
     } else {
       setRunning(false);
       setIndex((i) => i + 1);

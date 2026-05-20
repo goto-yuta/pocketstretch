@@ -1,14 +1,23 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = RouteProp<RootStackParamList, 'Completion'>;
 
 export default function CompletionScreen() {
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
+  const markStretchesCompleted = useUserStore((s) => s.markStretchesCompleted);
+
+  useEffect(() => {
+    markStretchesCompleted(route.params.completedStretchIds);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.emoji}>🎉</Text>
