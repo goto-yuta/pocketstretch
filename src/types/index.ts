@@ -11,6 +11,7 @@ export interface Stretch {
   bodyParts: BodyPart[];
   scenes: Scene[];
   steps: string[];
+  recommendedSets: 1 | 2 | 3;
 }
 
 export interface UserProfile {
@@ -25,7 +26,7 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Main: undefined;
   Session: { stretchIds: string[] };
-  Completion: undefined;
+  Completion: { completedStretchIds: string[] };
 };
 
 export type OnboardingStackParamList = {

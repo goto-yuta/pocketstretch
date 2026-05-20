@@ -6,12 +6,12 @@ const mockStretches: Stretch[] = [
   {
     id: 'a', nameJa: 'A', descriptionJa: '', image: 0,
     durationSeconds: 30, difficulty: 1,
-    bodyParts: ['neck'], scenes: ['office'], steps: [],
+    bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1,
   },
   {
     id: 'b', nameJa: 'B', descriptionJa: '', image: 0,
     durationSeconds: 30, difficulty: 2,
-    bodyParts: ['shoulder', 'back'], scenes: ['home'], steps: [],
+    bodyParts: ['shoulder', 'back'], scenes: ['home'], steps: [], recommendedSets: 2,
   },
 ];
 
@@ -51,11 +51,11 @@ describe('getRecommended', () => {
 });
 
 const mockForGoals: Stretch[] = [
-  { id: 'a', nameJa: 'A', descriptionJa: '', image: 0, durationSeconds: 30, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
-  { id: 'b', nameJa: 'B', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 2, bodyParts: ['shoulder'], scenes: ['home'], steps: [] },
-  { id: 'c', nameJa: 'C', descriptionJa: '', image: 0, durationSeconds: 45, difficulty: 3, bodyParts: ['leg'], scenes: ['serious'], steps: [] },
-  { id: 'd', nameJa: 'D', descriptionJa: '', image: 0, durationSeconds: 40, difficulty: 1, bodyParts: ['back'], scenes: ['home'], steps: [] },
-  { id: 'e', nameJa: 'E', descriptionJa: '', image: 0, durationSeconds: 50, difficulty: 2, bodyParts: ['hip'], scenes: ['home'], steps: [] },
+  { id: 'a', nameJa: 'A', descriptionJa: '', image: 0, durationSeconds: 30, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
+  { id: 'b', nameJa: 'B', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 2, bodyParts: ['shoulder'], scenes: ['home'], steps: [], recommendedSets: 2 },
+  { id: 'c', nameJa: 'C', descriptionJa: '', image: 0, durationSeconds: 45, difficulty: 3, bodyParts: ['leg'], scenes: ['serious'], steps: [], recommendedSets: 3 },
+  { id: 'd', nameJa: 'D', descriptionJa: '', image: 0, durationSeconds: 40, difficulty: 1, bodyParts: ['back'], scenes: ['home'], steps: [], recommendedSets: 1 },
+  { id: 'e', nameJa: 'E', descriptionJa: '', image: 0, durationSeconds: 50, difficulty: 2, bodyParts: ['hip'], scenes: ['home'], steps: [], recommendedSets: 2 },
 ];
 
 describe('filterByGoals', () => {
@@ -93,9 +93,9 @@ describe('filterByGoals', () => {
 });
 
 const mockForDuration: Stretch[] = [
-  { id: 'x', nameJa: 'X', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
-  { id: 'y', nameJa: 'Y', descriptionJa: '', image: 0, durationSeconds: 90, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
-  { id: 'z', nameJa: 'Z', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
+  { id: 'x', nameJa: 'X', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
+  { id: 'y', nameJa: 'Y', descriptionJa: '', image: 0, durationSeconds: 90, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
+  { id: 'z', nameJa: 'Z', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
 ];
 
 describe('applyDurationFilter', () => {
@@ -115,8 +115,8 @@ describe('applyDurationFilter', () => {
 
   it('skips stretches that do not fit but continues checking shorter ones', () => {
     const mixed: Stretch[] = [
-      { id: 'big', nameJa: 'big', descriptionJa: '', image: 0, durationSeconds: 200, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
-      { id: 'small', nameJa: 'small', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [] },
+      { id: 'big', nameJa: 'big', descriptionJa: '', image: 0, durationSeconds: 200, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
+      { id: 'small', nameJa: 'small', descriptionJa: '', image: 0, durationSeconds: 60, difficulty: 1, bodyParts: ['neck'], scenes: ['office'], steps: [], recommendedSets: 1 },
     ];
     // 3min=180s: big(200) > 180 → skip, small(60) ≤ 180 → include
     const result = applyDurationFilter(mixed, '3min');
