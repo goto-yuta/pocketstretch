@@ -1,4 +1,4 @@
-import { getPrescription, getCompletedMinutes, getSessionStretchIds } from '../src/utils/prescription';
+import { getPrescription, getCompletedMinutes, getSessionStretchIds, normalizeSport } from '../src/utils/prescription';
 import { Stretch } from '../src/types';
 
 const mockStretches: Stretch[] = [
@@ -130,5 +130,44 @@ describe('getSessionStretchIds', () => {
     };
     const result = getSessionStretchIds(prescription, ['chin-tuck', 'neck-side'], mockStretches);
     expect(result).toHaveLength(0);
+  });
+});
+
+describe('normalizeSport', () => {
+  it('matches Japanese sport name exactly', () => {
+    expect(normalizeSport('ランニング')).toBe('running');
+    expect(normalizeSport('ゴルフ')).toBe('golf');
+    expect(normalizeSport('サッカー')).toBe('soccer');
+    expect(normalizeSport('筋トレ')).toBe('weighttraining');
+    expect(normalizeSport('クライミング')).toBe('climbing');
+    expect(normalizeSport('ボルダリング')).toBe('climbing');
+  });
+
+  it('matches alias variants', () => {
+    expect(normalizeSport('フットボール')).toBe('soccer');
+    expect(normalizeSport('ジョギング')).toBe('running');
+    expect(normalizeSport('ウエイトトレーニング')).toBe('weighttraining');
+    expect(normalizeSport('登山')).toBe('hiking');
+    expect(normalizeSport('格闘技')).toBe('martial-arts');
+    expect(normalizeSport('空手')).toBe('martial-arts');
+    expect(normalizeSport('自転車競技')).toBe('road-cycling');
+    expect(normalizeSport('ロードバイク')).toBe('road-cycling');
+  });
+
+  it('is case-insensitive for English', () => {
+    expect(normalizeSport('RUNNING')).toBe('running');
+    expect(normalizeSport('Running')).toBe('running');
+    expect(normalizeSport('Soccer')).toBe('soccer');
+  });
+
+  it('returns null for unknown sport', () => {
+    expect(normalizeSport('謎のスポーツ')).toBeNull();
+    expect(normalizeSport('')).toBeNull();
+    expect(normalizeSport('   ')).toBeNull();
+  });
+
+  it('matches partial input for common variants', () => {
+    expect(normalizeSport('マラソン')).toBe('running');
+    expect(normalizeSport('新体操')).toBe('gymnastics');
   });
 });
