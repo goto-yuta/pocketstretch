@@ -24,6 +24,7 @@ export const useUserStore = create<UserStore>()(
       onboardingCompleted: false,
       bodyParts: [],
       scene: 'office',
+      sport: '',
       notificationEnabled: false,
       notificationTimes: [],
       dailyProgress: { date: '', completedStretchIds: [] },
