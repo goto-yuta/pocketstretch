@@ -88,13 +88,8 @@ const SPORT_PRESCRIPTION: Record<string, string[]> = {
 export function normalizeSport(input: string): string | null {
   if (!input.trim()) return null;
   const normalized = input.trim().toLowerCase();
-  // Pass 1: exact match
   for (const [key, aliases] of Object.entries(SPORT_ALIASES)) {
     if (aliases.some((a) => a.toLowerCase() === normalized)) return key;
-  }
-  // Pass 2: partial includes match
-  for (const [key, aliases] of Object.entries(SPORT_ALIASES)) {
-    if (aliases.some((a) => normalized.includes(a.toLowerCase()) || a.toLowerCase().includes(normalized))) return key;
   }
   return null;
 }
