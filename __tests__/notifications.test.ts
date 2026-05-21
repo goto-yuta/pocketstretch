@@ -1,4 +1,5 @@
-import { parseTimeString, buildDailyTriggers } from '../src/notifications';
+import { parseTimeString, buildDailyTriggers, scheduleNextStretchNotification } from '../src/notifications';
+import { SchedulerConfig } from '../src/types';
 
 describe('parseTimeString', () => {
   it('parses HH:MM into hours and minutes', () => {
@@ -13,5 +14,11 @@ describe('buildDailyTriggers', () => {
     expect(triggers).toHaveLength(3);
     expect(triggers[0]).toEqual({ hour: 8, minute: 0 });
     expect(triggers[2]).toEqual({ hour: 18, minute: 0 });
+  });
+});
+
+describe('scheduleNextStretchNotification', () => {
+  it('is a function', () => {
+    expect(typeof scheduleNextStretchNotification).toBe('function');
   });
 });

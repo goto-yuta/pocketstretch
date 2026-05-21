@@ -1,4 +1,6 @@
 import * as Notifications from 'expo-notifications';
+import { SchedulerConfig } from '../types';
+import { calcIntervalHours, calcNextStretchTime } from '../utils/scheduler';
 
 export function parseTimeString(time: string): { hour: number; minute: number } {
   const [h, m] = time.split(':').map(Number);
@@ -33,4 +35,24 @@ export async function scheduleNotifications(times: string[]): Promise<void> {
 
 export async function cancelAllNotifications(): Promise<void> {
   await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
+export async function scheduleNextStretchNotification(
+  lastCompletedAt: string,
+  config: SchedulerConfig
+): Promise<void> {
+  const next = calcNextStretchTime(lastCompletedAt, config);
+  const hours = Math.round(calcIntervalHours(config));
+  await Notifications.cancelAllScheduledNotificationsAsync();
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'ストレッチの時間です！',
+      body: `前回から約${hours}時間経ちました 💪`,
+      data: { screen: 'Gate' },
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: next,
+    },
+  });
 }
