@@ -24,10 +24,10 @@ const BODY_LABELS: Record<BodyPart, string> = {
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
-  const { bodyParts, scene, dailyProgress } = useUserStore();
+  const { bodyParts, scene, sport, dailyProgress } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene);
+  const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined);
 
   function startSession(stretchIds: string[]) {
     if (stretchIds.length === 0) return;
