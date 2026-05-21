@@ -16,9 +16,12 @@ export default function GateScreen() {
   const {
     bodyParts, scene, sport,
     schedulerConfig, lastStretchCompletedAt,
-    dailySkipUsed, recordSkip,
+    dailySkipUsed, lastSkipDate, recordSkip,
   } = useUserStore();
   const [skipVisible, setSkipVisible] = useState(false);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const effectiveSkipUsed = dailySkipUsed && lastSkipDate === today;
 
   useEffect(() => {
     const timer = setTimeout(() => setSkipVisible(true), 3000);
@@ -62,7 +65,7 @@ export default function GateScreen() {
       <TouchableOpacity style={styles.startBtn} onPress={handleStart}>
         <Text style={styles.startText}>▶  今すぐストレッチする</Text>
       </TouchableOpacity>
-      {skipVisible && !dailySkipUsed && (
+      {skipVisible && !effectiveSkipUsed && (
         <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
           <Text style={styles.skipText}>スキップ（本日あと 1 回）</Text>
         </TouchableOpacity>
