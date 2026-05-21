@@ -1,6 +1,9 @@
 import { SchedulerConfig } from '../types';
 
 export function calcIntervalHours(config: SchedulerConfig): number {
+  if (config.dailyCount <= 0) {
+    throw new RangeError(`dailyCount must be >= 1, got ${config.dailyCount}`);
+  }
   const [startH, startM] = config.activeHoursStart.split(':').map(Number);
   const [endH, endM] = config.activeHoursEnd.split(':').map(Number);
   const activeHours = (endH * 60 + endM - (startH * 60 + startM)) / 60;

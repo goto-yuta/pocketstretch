@@ -18,7 +18,7 @@ describe('calcIntervalHours', () => {
     expect(calcIntervalHours(defaultConfig)).toBeCloseTo(14 / 3);
   });
   it('calculates 4 for 09:00-17:00 with dailyCount 2', () => {
-    const config = { ...defaultConfig, dailyCount: 2, activeHoursStart: '09:00', activeHoursEnd: '17:00' };
+    const config: SchedulerConfig = { ...defaultConfig, dailyCount: 2, activeHoursStart: '09:00', activeHoursEnd: '17:00' };
     expect(calcIntervalHours(config)).toBe(4);
   });
 });
@@ -86,7 +86,7 @@ describe('calcNextStretchTime', () => {
   it('rolls over to next day activeHoursStart when result exceeds activeHoursEnd', () => {
     // Use dailyCount=5 so interval = 14/5 = 2.8h
     // last=21:00, next=23:48 which > 22:00 → next day 08:00
-    const config5 = { ...defaultConfig, dailyCount: 5 };
+    const config5: SchedulerConfig = { ...defaultConfig, dailyCount: 5 };
     const last = new Date(2026, 4, 21, 21, 0, 0).toISOString();
     const result = calcNextStretchTime(last, config5);
     expect(result.getDate()).toBe(22);

@@ -61,7 +61,7 @@ export type DurationFilter = '3min' | '5min' | '10min' | 'any';
 
 export interface SchedulerConfig {
   enabled: boolean;
-  dailyCount: number;       // 1～5
+  dailyCount: 1 | 2 | 3 | 4 | 5;
   activeHoursStart: string; // "HH:MM"
   activeHoursEnd: string;   // "HH:MM"
 }
