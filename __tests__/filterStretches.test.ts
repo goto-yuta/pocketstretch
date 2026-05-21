@@ -123,3 +123,41 @@ describe('applyDurationFilter', () => {
     expect(result.map(s => s.id)).toEqual(['small']);
   });
 });
+
+describe('filterByGoals – new goals', () => {
+  it('morning goal returns home/serious stretches with maxDifficulty 2', () => {
+    const result = filterByGoals(ALL_STRETCHES, ['morning']);
+    expect(result.length).toBeGreaterThan(0);
+    // all results must be home or serious scene
+    result.forEach((s) => {
+      expect(s.scenes.some((sc) => sc === 'home' || sc === 'serious')).toBe(true);
+    });
+    // no difficulty 3 stretches in morning
+    result.forEach((s) => {
+      expect(s.difficulty).toBeLessThanOrEqual(2);
+    });
+  });
+
+  it('bedtime goal returns home/serious stretches with maxDifficulty 1', () => {
+    const result = filterByGoals(ALL_STRETCHES, ['bedtime']);
+    expect(result.length).toBeGreaterThan(0);
+    result.forEach((s) => {
+      expect(s.difficulty).toBe(1);
+    });
+    result.forEach((s) => {
+      expect(s.scenes.some((sc) => sc === 'home' || sc === 'serious')).toBe(true);
+    });
+  });
+
+  it('morning goal includes morning-joint-mobility', () => {
+    const result = filterByGoals(ALL_STRETCHES, ['morning']);
+    const ids = result.map((s) => s.id);
+    expect(ids).toContain('morning-joint-mobility');
+  });
+
+  it('bedtime goal includes bedtime-yin-hip', () => {
+    const result = filterByGoals(ALL_STRETCHES, ['bedtime']);
+    const ids = result.map((s) => s.id);
+    expect(ids).toContain('bedtime-yin-hip');
+  });
+});

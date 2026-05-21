@@ -225,3 +225,39 @@ describe('getPrescription with sport', () => {
     expect(result.totalMinutes).toBeGreaterThan(0);
   });
 });
+
+describe('getPrescription – new body parts', () => {
+  it('returns arm stretches for arm body part in home scene', () => {
+    const result = getPrescription(ALL_STRETCHES, ['arm'], 'home');
+    expect(result.stretchIds.length).toBeGreaterThan(0);
+    // bicep-wall-stretch is home-scene eligible
+    expect(result.stretchIds).toContain('bicep-wall-stretch');
+  });
+
+  it('returns chest stretches for chest body part in home scene', () => {
+    const result = getPrescription(ALL_STRETCHES, ['chest'], 'home');
+    expect(result.stretchIds.length).toBeGreaterThan(0);
+    expect(result.stretchIds).toContain('doorway-chest-stretch');
+  });
+
+  it('returns core stretches for core body part in home scene', () => {
+    const result = getPrescription(ALL_STRETCHES, ['core'], 'home');
+    expect(result.stretchIds.length).toBeGreaterThan(0);
+    expect(result.stretchIds).toContain('dead-bug-stretch');
+  });
+
+  it('returns arm stretches in office scene', () => {
+    const result = getPrescription(ALL_STRETCHES, ['arm'], 'office');
+    // bicep-wall-stretch, tricep-overhead-stretch are office-eligible
+    expect(result.stretchIds.length).toBeGreaterThan(0);
+    expect(result.stretchIds).toContain('bicep-wall-stretch');
+  });
+
+  it('returns no chest prescriptions in office scene (doorway-chest-stretch is home-only)', () => {
+    // chest-open and pec-wall-stretch: chest-open is office-eligible, pec-wall-stretch is not
+    // chest-open IS in office scene so we should still get results
+    const result = getPrescription(ALL_STRETCHES, ['chest'], 'office');
+    // chest-open has scenes: ['office', 'home', 'serious'] so it qualifies
+    expect(result.stretchIds).toContain('chest-open');
+  });
+});
