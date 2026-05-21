@@ -27,6 +27,7 @@ export interface UserProfile {
 export type RootStackParamList = {
   Onboarding: undefined;
   Main: undefined;
+  Gate: undefined;
   Session: { stretchIds: string[] };
   Completion: { completedStretchIds: string[] };
 };
@@ -57,3 +58,10 @@ export type Goal =
   | 'mood-change';
 
 export type DurationFilter = '3min' | '5min' | '10min' | 'any';
+
+export interface SchedulerConfig {
+  enabled: boolean;
+  dailyCount: number;       // 1～5
+  activeHoursStart: string; // "HH:MM"
+  activeHoursEnd: string;   // "HH:MM"
+}
