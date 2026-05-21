@@ -19,40 +19,49 @@ export default function CountdownTimer({ durationSeconds, onComplete, running }:
   const [remaining, setRemaining] = useState(durationSeconds);
   const dashOffset = useRef(new Animated.Value(0)).current;
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const animRef = useRef<Animated.CompositeAnimation | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     setRemaining(durationSeconds);
     dashOffset.setValue(0);
+    animRef.current?.stop();
   }, [durationSeconds]);
 
   useEffect(() => {
     if (!running) {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      animRef.current?.stop();
       return;
     }
     intervalRef.current = setInterval(() => {
       setRemaining((r) => {
+        animRef.current?.stop();
         if (r <= 1) {
           clearInterval(intervalRef.current!);
-          Animated.timing(dashOffset, {
+          animRef.current = Animated.timing(dashOffset, {
             toValue: CIRCUM,
-            duration: 900,
+            duration: 950,
             useNativeDriver: false,
-          }).start();
-          onComplete();
+          });
+          animRef.current.start();
+          onCompleteRef.current();
           return 0;
         }
         const next = r - 1;
-        Animated.timing(dashOffset, {
+        animRef.current = Animated.timing(dashOffset, {
           toValue: CIRCUM * (1 - next / durationSeconds),
-          duration: 900,
+          duration: 950,
           useNativeDriver: false,
-        }).start();
+        });
+        animRef.current.start();
         return next;
       });
     }, 1000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      animRef.current?.stop();
     };
   }, [running, durationSeconds]);
 
