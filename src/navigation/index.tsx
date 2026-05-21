@@ -4,10 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { useUserStore } from '../store/useUserStore';
 import { MainTabParamList, OnboardingStackParamList, RootStackParamList } from '../types';
+import { shouldShowGate } from '../utils/scheduler';
 import Step1BodyParts from '../screens/onboarding/Step1BodyParts';
 import Step2Scene from '../screens/onboarding/Step2Scene';
 import Step3Sport from '../screens/onboarding/Step3Sport';
 import Step4Notifications from '../screens/onboarding/Step4Notifications';
+import GateScreen from '../screens/GateScreen';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SessionScreen from '../screens/SessionScreen';
@@ -39,6 +41,10 @@ function MainTabs() {
 
 export default function RootNavigator() {
   const onboardingCompleted = useUserStore((s) => s.onboardingCompleted);
+  const lastStretchCompletedAt = useUserStore((s) => s.lastStretchCompletedAt);
+  const schedulerConfig = useUserStore((s) => s.schedulerConfig);
+  const gateNeeded = shouldShowGate(lastStretchCompletedAt, schedulerConfig);
+
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -46,6 +52,13 @@ export default function RootNavigator() {
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />
         ) : (
           <>
+            {gateNeeded && (
+              <RootStack.Screen
+                name="Gate"
+                component={GateScreen}
+                options={{ gestureEnabled: false }}
+              />
+            )}
             <RootStack.Screen name="Main" component={MainTabs} />
             <RootStack.Screen
               name="Session"
