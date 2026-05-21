@@ -15,16 +15,17 @@ export default function SessionScreen() {
   useKeepAwake();
   const route = useRoute<Route>();
   const navigation = useNavigation<Nav>();
-  // mapを使って重複IDを保持（同じストレッチを複数セット実行できる）
   const stretches = route.params.stretchIds
     .map((id) => ALL_STRETCHES.find((s) => s.id === id))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
   const [index, setIndex] = useState(0);
   const [running, setRunning] = useState(true);
+  const [paused, setPaused] = useState(false);
 
   const current = stretches[index];
 
   function advance() {
+    setPaused(false);
     if (index + 1 >= stretches.length) {
       const uniqueIds = Array.from(new Set(stretches.map((s) => s.id)));
       navigation.replace('Completion', { completedStretchIds: uniqueIds });
@@ -59,9 +60,12 @@ export default function SessionScreen() {
         <CountdownTimer
           key={index}
           durationSeconds={current.durationSeconds}
-          running={running}
+          running={running && !paused}
           onComplete={advance}
         />
+        <TouchableOpacity style={styles.pauseBtn} onPress={() => setPaused((p) => !p)}>
+          <Text style={styles.pauseText}>{paused ? '▶  再開' : '⏸  一時停止'}</Text>
+        </TouchableOpacity>
         <Text style={styles.desc}>{current.descriptionJa}</Text>
         {current.steps.map((step, i) => (
           <Text key={i} style={styles.step}>・{step}</Text>
@@ -83,7 +87,9 @@ const styles = StyleSheet.create({
   content: { alignItems: 'center', paddingHorizontal: 24, paddingBottom: 100 },
   image: { width: '100%', height: 220, marginBottom: 20, borderRadius: 16 },
   name: { fontSize: 22, fontWeight: 'bold', color: '#333', marginBottom: 8, textAlign: 'center' },
-  desc: { fontSize: 15, color: '#555', textAlign: 'center', marginTop: 16, lineHeight: 22 },
+  pauseBtn: { marginBottom: 16 },
+  pauseText: { fontSize: 16, color: '#4CAF50', fontWeight: 'bold' },
+  desc: { fontSize: 15, color: '#555', textAlign: 'center', marginTop: 8, lineHeight: 22 },
   step: { fontSize: 14, color: '#666', alignSelf: 'flex-start', marginTop: 8, lineHeight: 20 },
   skipBtn: { position: 'absolute', bottom: 32, right: 24 },
   skipText: { fontSize: 15, color: '#4CAF50', fontWeight: 'bold' },
