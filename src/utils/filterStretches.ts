@@ -45,6 +45,8 @@ const GOAL_FILTER_MAP: Record<Goal, GoalFilterConfig> = {
   'warmup': { minDifficulty: 2 },
   'cooldown': { maxDifficulty: 2 },
   'mood-change': {},
+  'morning': { scenes: ['home', 'serious'], maxDifficulty: 2 },
+  'bedtime': { scenes: ['home', 'serious'], maxDifficulty: 1 },
 };
 
 const DURATION_SECONDS: Record<DurationFilter, number> = {

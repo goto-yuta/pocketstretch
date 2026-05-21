@@ -1,4 +1,4 @@
-export type BodyPart = 'neck' | 'shoulder' | 'back' | 'hip' | 'leg';
+export type BodyPart = 'neck' | 'shoulder' | 'back' | 'hip' | 'leg' | 'arm' | 'chest' | 'core';
 export type Scene = 'office' | 'home' | 'serious';
 
 export interface Stretch {
@@ -56,7 +56,9 @@ export type Goal =
   | 'focus'
   | 'warmup'
   | 'cooldown'
-  | 'mood-change';
+  | 'mood-change'
+  | 'morning'
+  | 'bedtime';
 
 export type DurationFilter = '3min' | '5min' | '10min' | 'any';
 

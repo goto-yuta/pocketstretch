@@ -100,6 +100,9 @@ const BODY_PRESCRIPTION: Record<BodyPart, string[]> = {
   back:     ['thoracic-open-book', 'cat-cow', 'quadratus-lumborum-stretch'],
   hip:      ['piriformis-stretch', 'iliopsoas-stretch', 'butterfly'],
   leg:      ['hamstring', 'calf', 'it-band-stretch'],
+  arm:      ['bicep-wall-stretch', 'tricep-overhead-stretch', 'forearm-rotator-stretch'],
+  chest:    ['doorway-chest-stretch', 'pec-wall-stretch', 'chest-open'],
+  core:     ['dead-bug-stretch', 'seated-trunk-rotation', 'plank-hold'],
 };
 
 const BODY_LABEL: Record<BodyPart, string> = {
@@ -108,6 +111,9 @@ const BODY_LABEL: Record<BodyPart, string> = {
   back:     '腰痛ケア',
   hip:      '股関節ケア',
   leg:      '脚ケア',
+  arm:      '腕',
+  chest:    '胸',
+  core:     '体幹',
 };
 
 export function getPrescription(

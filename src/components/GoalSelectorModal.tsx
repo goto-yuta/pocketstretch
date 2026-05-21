@@ -32,6 +32,8 @@ const GOAL_OPTIONS: GoalOption[] = [
   { value: 'warmup', emoji: '🔥', label: 'ウォームアップ' },
   { value: 'cooldown', emoji: '❄️', label: 'クールダウン' },
   { value: 'mood-change', emoji: '✨', label: '気分転換' },
+  { value: 'morning', emoji: '🌅', label: '朝活' },
+  { value: 'bedtime', emoji: '🌙', label: '就寝前' },
 ];
 
 interface DurationOption {

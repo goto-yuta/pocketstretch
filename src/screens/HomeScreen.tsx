@@ -20,6 +20,7 @@ const SCENE_LABELS: Record<Scene, string> = {
 
 const BODY_LABELS: Record<BodyPart, string> = {
   neck: '首', shoulder: '肩', back: '腰', hip: '股関節', leg: '脚',
+  arm: '腕', chest: '胸', core: '体幹',
 };
 
 export default function HomeScreen() {

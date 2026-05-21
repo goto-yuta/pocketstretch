@@ -11,6 +11,9 @@ const BODY_PARTS: { id: BodyPart; label: string }[] = [
   { id: 'back', label: '腰・背中' },
   { id: 'hip', label: '股関節' },
   { id: 'leg', label: '脚' },
+  { id: 'arm', label: '腕' },
+  { id: 'chest', label: '胸' },
+  { id: 'core', label: '体幹' },
 ];
 
 type Props = {
