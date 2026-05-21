@@ -12,6 +12,7 @@ interface UserStore extends UserProfile {
   dailyProgress: DailyProgress;
   setBodyParts: (parts: BodyPart[]) => void;
   setScene: (scene: Scene) => void;
+  setSport: (sport: string) => void;
   setNotificationEnabled: (enabled: boolean) => void;
   setNotificationTimes: (times: string[]) => void;
   completeOnboarding: () => void;
@@ -30,6 +31,7 @@ export const useUserStore = create<UserStore>()(
       dailyProgress: { date: '', completedStretchIds: [] },
       setBodyParts: (bodyParts) => set({ bodyParts }),
       setScene: (scene) => set({ scene }),
+      setSport: (sport) => set({ sport }),
       setNotificationEnabled: (notificationEnabled) => set({ notificationEnabled }),
       setNotificationTimes: (notificationTimes) => set({ notificationTimes }),
       completeOnboarding: () => set({ onboardingCompleted: true }),

@@ -72,3 +72,35 @@ describe('markStretchesCompleted', () => {
     expect(result.current.dailyProgress.date).toBe(today);
   });
 });
+
+describe('setSport', () => {
+  beforeEach(() => {
+    useUserStore.setState({
+      onboardingCompleted: false,
+      bodyParts: [],
+      scene: 'office',
+      sport: '',
+      notificationEnabled: false,
+      notificationTimes: [],
+      dailyProgress: { date: '', completedStretchIds: [] },
+    });
+  });
+
+  it('sets sport', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.setSport('running'));
+    expect(result.current.sport).toBe('running');
+  });
+
+  it('initial sport is empty string', () => {
+    const { result } = renderHook(() => useUserStore());
+    expect(result.current.sport).toBe('');
+  });
+
+  it('can clear sport', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.setSport('golf'));
+    act(() => result.current.setSport(''));
+    expect(result.current.sport).toBe('');
+  });
+});
