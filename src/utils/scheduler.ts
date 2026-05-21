@@ -40,18 +40,26 @@ export function calcNextStretchTime(
   const [endH, endM] = config.activeHoursEnd.split(':').map(Number);
   const [startH, startM] = config.activeHoursStart.split(':').map(Number);
 
-  const nextHours = next.getHours();
-  const nextMinutes = next.getMinutes();
-  const nextTimeInMinutes = nextHours * 60 + nextMinutes;
-  const endTimeInMinutes = endH * 60 + endM;
-  const startTimeInMinutes = startH * 60 + startM;
+  const endOfDay = new Date(next);
+  endOfDay.setHours(endH, endM, 0, 0);
 
-  // If next time is outside active hours, move to next day's activeHoursStart
-  if (nextTimeInMinutes >= endTimeInMinutes || nextTimeInMinutes < startTimeInMinutes) {
+  const startOfDay = new Date(next);
+  startOfDay.setHours(startH, startM, 0, 0);
+
+  if (next >= endOfDay) {
+    // same-day overshoot (e.g., 23:40 > 22:00) → next day activeHoursStart
     const tomorrow = new Date(next);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(startH, startM, 0, 0);
     return tomorrow;
   }
+
+  if (next < startOfDay) {
+    // midnight-crossing (e.g., 00:40 < 08:00) → same day activeHoursStart
+    const sameDay = new Date(next);
+    sameDay.setHours(startH, startM, 0, 0);
+    return sameDay;
+  }
+
   return next;
 }

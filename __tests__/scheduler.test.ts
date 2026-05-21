@@ -74,11 +74,22 @@ describe('calcNextStretchTime', () => {
     expect(result.getDate()).toBe(21);
     expect(result.getHours()).toBe(14);
   });
-  it('rolls over to next day activeHoursStart when result exceeds activeHoursEnd', () => {
+  it('returns same-day activeHoursStart when result crosses midnight into early hours', () => {
     const last = new Date(2026, 4, 21, 20, 0, 0).toISOString();
     const result = calcNextStretchTime(last, defaultConfig);
-    // 20:00 + ~4.67h ≈ 00:40 next day (2026-05-22 00:40), which is before 08:00 → rolls to 2026-05-23 08:00
-    expect(result.getDate()).toBe(23);
+    // 20:00 + 4.67h = 00:40 May 22 → before 08:00 → return May 22 08:00
+    expect(result.getDate()).toBe(22);
+    expect(result.getHours()).toBe(8);
+    expect(result.getMinutes()).toBe(0);
+  });
+
+  it('rolls over to next day activeHoursStart when result exceeds activeHoursEnd', () => {
+    // Use dailyCount=5 so interval = 14/5 = 2.8h
+    // last=21:00, next=23:48 which > 22:00 → next day 08:00
+    const config5 = { ...defaultConfig, dailyCount: 5 };
+    const last = new Date(2026, 4, 21, 21, 0, 0).toISOString();
+    const result = calcNextStretchTime(last, config5);
+    expect(result.getDate()).toBe(22);
     expect(result.getHours()).toBe(8);
     expect(result.getMinutes()).toBe(0);
   });
