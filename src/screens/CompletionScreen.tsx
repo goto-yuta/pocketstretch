@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 
@@ -12,10 +13,17 @@ type Route = RouteProp<RootStackParamList, 'Completion'>;
 export default function CompletionScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const markStretchesCompleted = useUserStore((s) => s.markStretchesCompleted);
+  const {
+    markStretchesCompleted,
+    recordStretchCompletion,
+    schedulerConfig,
+  } = useUserStore();
 
   useEffect(() => {
     markStretchesCompleted(route.params.completedStretchIds);
+    recordStretchCompletion();
+    const now = new Date().toISOString();
+    scheduleNextStretchNotification(now, schedulerConfig).catch(() => {});
   }, []);
 
   return (
