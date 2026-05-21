@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Animated, StyleSheet, Text, View } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface Props {
   durationSeconds: number;
@@ -7,12 +10,19 @@ interface Props {
   running: boolean;
 }
 
+const SIZE = 160;
+const STROKE = 8;
+const RADIUS = (SIZE - STROKE) / 2;
+const CIRCUM = 2 * Math.PI * RADIUS;
+
 export default function CountdownTimer({ durationSeconds, onComplete, running }: Props) {
   const [remaining, setRemaining] = useState(durationSeconds);
+  const dashOffset = useRef(new Animated.Value(0)).current;
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setRemaining(durationSeconds);
+    dashOffset.setValue(0);
   }, [durationSeconds]);
 
   useEffect(() => {
@@ -24,10 +34,21 @@ export default function CountdownTimer({ durationSeconds, onComplete, running }:
       setRemaining((r) => {
         if (r <= 1) {
           clearInterval(intervalRef.current!);
+          Animated.timing(dashOffset, {
+            toValue: CIRCUM,
+            duration: 900,
+            useNativeDriver: false,
+          }).start();
           onComplete();
           return 0;
         }
-        return r - 1;
+        const next = r - 1;
+        Animated.timing(dashOffset, {
+          toValue: CIRCUM * (1 - next / durationSeconds),
+          duration: 900,
+          useNativeDriver: false,
+        }).start();
+        return next;
       });
     }, 1000);
     return () => {
@@ -36,19 +57,49 @@ export default function CountdownTimer({ durationSeconds, onComplete, running }:
   }, [running, durationSeconds]);
 
   return (
-    <View style={styles.circle}>
-      <Text style={styles.number}>{remaining}</Text>
-      <Text style={styles.label}>秒</Text>
+    <View style={styles.container}>
+      <Svg width={SIZE} height={SIZE}>
+        <Circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          stroke="#e0e0e0"
+          strokeWidth={STROKE}
+          fill="none"
+        />
+        <AnimatedCircle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          stroke="#4CAF50"
+          strokeWidth={STROKE}
+          fill="none"
+          strokeDasharray={`${CIRCUM} ${CIRCUM}`}
+          strokeDashoffset={dashOffset}
+          strokeLinecap="round"
+          rotation="-90"
+          origin={`${SIZE / 2}, ${SIZE / 2}`}
+        />
+      </Svg>
+      <View style={styles.textOverlay}>
+        <Text style={styles.number}>{remaining}</Text>
+        <Text style={styles.label}>秒</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  circle: {
-    width: 100, height: 100, borderRadius: 50,
-    borderWidth: 4, borderColor: '#4CAF50',
-    alignItems: 'center', justifyContent: 'center',
+  container: {
+    width: SIZE,
+    height: SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 20,
+  },
+  textOverlay: {
+    position: 'absolute',
+    alignItems: 'center',
   },
   number: { fontSize: 36, fontWeight: 'bold', color: '#2E7D32' },
   label: { fontSize: 12, color: '#555' },
