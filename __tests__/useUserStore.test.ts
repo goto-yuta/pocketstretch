@@ -7,6 +7,7 @@ describe('useUserStore', () => {
       onboardingCompleted: false,
       bodyParts: [],
       scene: 'office',
+      sport: '',
       notificationEnabled: false,
       notificationTimes: [],
       dailyProgress: { date: '', completedStretchIds: [] },

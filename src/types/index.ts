@@ -5,21 +5,23 @@ export interface Stretch {
   id: string;
   nameJa: string;
   descriptionJa: string;
-  image: number; // require() result
+  image: number;
   durationSeconds: number;
   difficulty: 1 | 2 | 3;
   bodyParts: BodyPart[];
   scenes: Scene[];
   steps: string[];
   recommendedSets: 1 | 2 | 3;
+  sport?: string[];
 }
 
 export interface UserProfile {
   onboardingCompleted: boolean;
   bodyParts: BodyPart[];
   scene: Scene;
+  sport: string;
   notificationEnabled: boolean;
-  notificationTimes: string[]; // ["09:00", "14:00"]
+  notificationTimes: string[];
 }
 
 export type RootStackParamList = {
@@ -32,7 +34,8 @@ export type RootStackParamList = {
 export type OnboardingStackParamList = {
   Step1: undefined;
   Step2: undefined;
-  Step3: undefined;
+  Step3Sport: undefined;
+  Step4: undefined;
 };
 
 export type MainTabParamList = {
