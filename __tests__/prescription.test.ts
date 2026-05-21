@@ -1,5 +1,6 @@
 import { getPrescription, getCompletedMinutes, getSessionStretchIds, normalizeSport } from '../src/utils/prescription';
 import { Stretch } from '../src/types';
+import { ALL_STRETCHES } from '../src/data/stretches';
 
 const mockStretches: Stretch[] = [
   { id: 'chin-tuck', nameJa: '顎引き', descriptionJa: '', image: 0, durationSeconds: 30, difficulty: 1, bodyParts: ['neck'], scenes: ['office', 'home', 'serious'], steps: [], recommendedSets: 2 },
@@ -169,5 +170,58 @@ describe('normalizeSport', () => {
   it('matches partial input for common variants', () => {
     expect(normalizeSport('マラソン')).toBe('running');
     expect(normalizeSport('新体操')).toBe('gymnastics');
+  });
+});
+
+describe('getPrescription with sport', () => {
+  it('includes sport prescription stretches', () => {
+    const result = getPrescription(ALL_STRETCHES, [], 'home', 'running');
+    // running prescription: iliopsoas-stretch, hamstring, it-band-stretch, calf, piriformis-stretch
+    expect(result.stretchIds).toContain('hamstring');
+    expect(result.stretchIds).toContain('calf');
+    expect(result.stretchIds).toContain('iliopsoas-stretch');
+  });
+
+  it('unions bodyParts and sport prescriptions', () => {
+    // neck bodyParts → chin-tuck, levator-scapula-stretch, neck-side
+    // soccer sport → adductor-stretch, hamstring, iliopsoas-stretch, calf, pigeon (filtered by scene)
+    const result = getPrescription(ALL_STRETCHES, ['neck'], 'home', 'soccer');
+    expect(result.stretchIds).toContain('neck-side');
+    expect(result.stretchIds).toContain('hamstring');
+  });
+
+  it('deduplicates stretches appearing in both prescriptions', () => {
+    // hamstring is in both running and soccer prescriptions
+    const result = getPrescription(ALL_STRETCHES, [], 'home', 'running');
+    const count = result.stretchIds.filter((id) => id === 'hamstring').length;
+    expect(count).toBe(1);
+  });
+
+  it('filters sport prescription stretches by scene', () => {
+    // pigeon has scenes: ['serious'] — not office or home
+    const result = getPrescription(ALL_STRETCHES, [], 'office', 'soccer');
+    expect(result.stretchIds).not.toContain('pigeon');
+  });
+
+  it('includes sport name in label', () => {
+    const result = getPrescription(ALL_STRETCHES, ['neck'], 'home', 'running');
+    expect(result.label).toContain('ランニング');
+    expect(result.label).toContain('首こり');
+  });
+
+  it('returns sport-only label when bodyParts is empty', () => {
+    const result = getPrescription(ALL_STRETCHES, [], 'home', 'running');
+    expect(result.label).toBe('ランニング');
+  });
+
+  it('returns empty prescription when both bodyParts and sport are empty', () => {
+    const result = getPrescription(ALL_STRETCHES, [], 'office', undefined);
+    expect(result.stretchIds).toHaveLength(0);
+    expect(result.label).toBe('');
+  });
+
+  it('calculates totalMinutes across both prescriptions', () => {
+    const result = getPrescription(ALL_STRETCHES, ['neck'], 'home', 'running');
+    expect(result.totalMinutes).toBeGreaterThan(0);
   });
 });

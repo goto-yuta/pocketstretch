@@ -114,24 +114,37 @@ export function getPrescription(
   stretches: Stretch[],
   bodyParts: BodyPart[],
   scene: Scene,
+  sport?: string,
 ): Prescription {
-  if (bodyParts.length === 0) {
-    return { stretchIds: [], totalMinutes: 0, label: '' };
-  }
-
   const stretchMap = new Map(stretches.map((s) => [s.id, s]));
   const seen = new Set<string>();
   const stretchIds: string[] = [];
 
+  function addIfEligible(id: string) {
+    if (seen.has(id)) return;
+    const stretch = stretchMap.get(id);
+    if (!stretch) return;
+    if (!stretch.scenes.includes(scene)) return;
+    seen.add(id);
+    stretchIds.push(id);
+  }
+
+  // bodyParts 処方
   for (const bp of bodyParts) {
     for (const id of BODY_PRESCRIPTION[bp]) {
-      if (seen.has(id)) continue;
-      const stretch = stretchMap.get(id);
-      if (!stretch) continue;
-      if (!stretch.scenes.includes(scene)) continue;
-      seen.add(id);
-      stretchIds.push(id);
+      addIfEligible(id);
     }
+  }
+
+  // スポーツ処方
+  if (sport && SPORT_PRESCRIPTION[sport]) {
+    for (const id of SPORT_PRESCRIPTION[sport]) {
+      addIfEligible(id);
+    }
+  }
+
+  if (stretchIds.length === 0) {
+    return { stretchIds: [], totalMinutes: 0, label: '' };
   }
 
   const totalSeconds = stretchIds.reduce((sum, id) => {
@@ -139,7 +152,9 @@ export function getPrescription(
     return s ? sum + s.durationSeconds * s.recommendedSets : sum;
   }, 0);
 
-  const label = bodyParts.map((bp) => BODY_LABEL[bp]).join(' + ');
+  const bodyLabel = bodyParts.map((bp) => BODY_LABEL[bp]);
+  const sportLabel = sport && SPORT_LABEL[sport] ? [SPORT_LABEL[sport]] : [];
+  const label = [...bodyLabel, ...sportLabel].join(' + ');
 
   return { stretchIds, totalMinutes: Math.ceil(totalSeconds / 60), label };
 }
