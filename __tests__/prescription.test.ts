@@ -167,7 +167,7 @@ describe('normalizeSport', () => {
     expect(normalizeSport('   ')).toBeNull();
   });
 
-  it('matches partial input for common variants', () => {
+  it('matches exact alias variants', () => {
     expect(normalizeSport('マラソン')).toBe('running');
     expect(normalizeSport('新体操')).toBe('gymnastics');
   });

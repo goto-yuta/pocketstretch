@@ -50,6 +50,10 @@ export default function Step3Sport() {
         onChangeText={setInput}
         autoCapitalize="none"
         returnKeyType="done"
+        onSubmitEditing={() => {
+          const key = normalizeSport(input);
+          if (key) handleSelect(key);
+        }}
       />
 
       <FlatList
