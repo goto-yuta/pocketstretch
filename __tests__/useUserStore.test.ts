@@ -10,7 +10,16 @@ describe('useUserStore', () => {
       sport: '',
       notificationEnabled: false,
       notificationTimes: [],
+      schedulerConfig: {
+        enabled: true,
+        dailyCount: 3,
+        activeHoursStart: '08:00',
+        activeHoursEnd: '22:00',
+      },
       dailyProgress: { date: '', completedStretchIds: [] },
+      lastStretchCompletedAt: null,
+      dailySkipUsed: false,
+      lastSkipDate: null,
     });
   });
 
@@ -102,5 +111,42 @@ describe('setSport', () => {
     act(() => result.current.setSport('golf'));
     act(() => result.current.setSport(''));
     expect(result.current.sport).toBe('');
+  });
+});
+
+describe('setSchedulerConfig', () => {
+  it('updates schedulerConfig', () => {
+    const { result } = renderHook(() => useUserStore());
+    const newConfig = { enabled: false, dailyCount: 2 as const, activeHoursStart: '09:00', activeHoursEnd: '21:00' };
+    act(() => result.current.setSchedulerConfig(newConfig));
+    expect(result.current.schedulerConfig).toEqual(newConfig);
+  });
+});
+
+describe('recordStretchCompletion', () => {
+  it('sets lastStretchCompletedAt to current time', () => {
+    const before = Date.now();
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    const after = Date.now();
+    const ts = new Date(result.current.lastStretchCompletedAt!).getTime();
+    expect(ts).toBeGreaterThanOrEqual(before);
+    expect(ts).toBeLessThanOrEqual(after);
+  });
+});
+
+describe('recordSkip', () => {
+  it('sets dailySkipUsed to true and records today', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordSkip());
+    expect(result.current.dailySkipUsed).toBe(true);
+    expect(result.current.lastSkipDate).toBe(new Date().toISOString().slice(0, 10));
+  });
+  it('sets lastStretchCompletedAt to reset the interval timer', () => {
+    const before = Date.now();
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordSkip());
+    const ts = new Date(result.current.lastStretchCompletedAt!).getTime();
+    expect(ts).toBeGreaterThanOrEqual(before);
   });
 });

@@ -22,6 +22,7 @@ export interface UserProfile {
   sport: string;
   notificationEnabled: boolean;
   notificationTimes: string[];
+  schedulerConfig: SchedulerConfig;
 }
 
 export type RootStackParamList = {
