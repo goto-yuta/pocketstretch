@@ -6,7 +6,7 @@ import { useUserStore } from '../../store/useUserStore';
 
 const DEFAULT_TIMES = ['09:00', '13:00', '18:00'];
 
-export default function Step3Notifications() {
+export default function Step4Notifications() {
   const { completeOnboarding, setNotificationEnabled, setNotificationTimes } = useUserStore();
   const [loading, setLoading] = useState(false);
 

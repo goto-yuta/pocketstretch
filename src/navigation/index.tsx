@@ -6,7 +6,8 @@ import { useUserStore } from '../store/useUserStore';
 import { MainTabParamList, OnboardingStackParamList, RootStackParamList } from '../types';
 import Step1BodyParts from '../screens/onboarding/Step1BodyParts';
 import Step2Scene from '../screens/onboarding/Step2Scene';
-import Step3Notifications from '../screens/onboarding/Step3Notifications';
+import Step3Sport from '../screens/onboarding/Step3Sport';
+import Step4Notifications from '../screens/onboarding/Step4Notifications';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SessionScreen from '../screens/SessionScreen';
@@ -21,7 +22,8 @@ function OnboardingNavigator() {
     <OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
       <OnboardingStack.Screen name="Step1" component={Step1BodyParts} />
       <OnboardingStack.Screen name="Step2" component={Step2Scene} />
-      <OnboardingStack.Screen name="Step3" component={Step3Notifications} />
+      <OnboardingStack.Screen name="Step3Sport" component={Step3Sport} />
+      <OnboardingStack.Screen name="Step4" component={Step4Notifications} />
     </OnboardingStack.Navigator>
   );
 }

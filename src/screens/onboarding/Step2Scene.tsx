@@ -20,7 +20,7 @@ export default function Step2Scene({ navigation }: Props) {
 
   function handleSelect(scene: Scene) {
     setScene(scene);
-    navigation.navigate('Step3');
+    navigation.navigate('Step3Sport');
   }
 
   return (
