@@ -31,7 +31,7 @@ export default function Step2Scene({ navigation }: Props) {
         {SCENES.map(({ id, label, emoji, desc }) => (
           <Pressable key={id} style={styles.card} onPress={() => handleSelect(id)}>
             <Text style={styles.emoji}>{emoji}</Text>
-            <View>
+            <View style={styles.textColumn}>
               <Text style={styles.label}>{label}</Text>
               <Text style={styles.desc}>{desc}</Text>
             </View>
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgCard,
   },
   emoji: { fontSize: 32 },
+  textColumn: { flex: 1 },
   label: { fontSize: 17, fontWeight: 'bold', color: Colors.textPrimary },
   desc: { fontSize: 13, color: Colors.textMuted, marginTop: 4 },
 });

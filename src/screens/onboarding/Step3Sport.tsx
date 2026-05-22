@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -71,9 +70,9 @@ export default function Step3Sport() {
         style={styles.list}
       />
 
-      <TouchableOpacity style={styles.skip} onPress={handleSkip}>
+      <Pressable style={styles.skip} onPress={handleSkip}>
         <Text style={styles.skipText}>スキップ</Text>
-      </TouchableOpacity>
+      </Pressable>
     </SafeAreaView>
   );
 }
