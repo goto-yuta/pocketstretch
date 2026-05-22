@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Linking, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { cancelAllNotifications, requestPermissions, scheduleNextStretchNotification, scheduleNotifications } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
-import { SchedulerConfig } from '../types';
+import { Colors, Radius } from '../styles/tokens';
+import { RootStackParamList, SchedulerConfig } from '../types';
 import { calcNextStretchTime } from '../utils/scheduler';
 
 const SCENE_LABEL: Record<string, string> = {
@@ -28,6 +31,7 @@ function adjustHour(timeStr: string, delta: number): string {
 }
 
 export default function SettingsScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {
     notificationEnabled, notificationTimes,
     setNotificationEnabled, setNotificationTimes,
@@ -91,6 +95,8 @@ export default function SettingsScreen() {
         <Switch
           value={schedulerConfig.enabled}
           onValueChange={(v) => updateSchedulerConfig({ enabled: v })}
+          trackColor={{ false: Colors.border, true: Colors.primaryLight }}
+          thumbColor={schedulerConfig.enabled ? Colors.primary : '#fff'}
         />
       </View>
 
@@ -143,42 +149,85 @@ export default function SettingsScreen() {
       <Text style={styles.sectionTitle}>通知</Text>
       <View style={styles.row}>
         <Text style={styles.label}>通知</Text>
-        <Switch value={notificationEnabled} onValueChange={toggleNotifications} disabled={loading} />
+        <Switch
+          value={notificationEnabled}
+          onValueChange={toggleNotifications}
+          disabled={loading}
+          trackColor={{ false: Colors.border, true: Colors.primaryLight }}
+          thumbColor={notificationEnabled ? Colors.primary : '#fff'}
+        />
       </View>
       {notificationEnabled && (
         <Text style={styles.sub}>通知時刻: {notificationTimes.join('  ')}</Text>
       )}
 
-      <Text style={styles.sectionTitle}>現在のプロフィール</Text>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>シーン</Text>
-        <Text style={styles.infoValue}>{SCENE_LABEL[scene]}</Text>
-      </View>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>気になる部位</Text>
-        <Text style={styles.infoValue}>{bodyParts.map((b) => BODY_LABEL[b]).join('・')}</Text>
+      <Text style={styles.sectionTitle}>プロフィール</Text>
+      <View style={styles.editableSection}>
+        <TouchableOpacity
+          style={styles.editRow}
+          onPress={() => navigation.navigate('EditScene')}
+        >
+          <Text style={styles.label}>シーン</Text>
+          <View style={styles.editRowRight}>
+            <Text style={styles.editValue}>{SCENE_LABEL[scene] ?? scene}</Text>
+            <Text style={styles.chevron}>›</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.editRow, { borderBottomWidth: 0 }]}
+          onPress={() => navigation.navigate('EditBodyParts')}
+        >
+          <Text style={styles.label}>気になる部位</Text>
+          <View style={styles.editRowRight}>
+            <Text style={styles.editValue}>{bodyParts.map((b) => BODY_LABEL[b] ?? b).join('・')}</Text>
+            <Text style={styles.chevron}>›</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 16 },
-  heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 24 },
-  sectionTitle: { fontSize: 15, fontWeight: 'bold', color: '#888', marginTop: 24, marginBottom: 8 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderColor: '#eee' },
-  label: { fontSize: 16, color: '#333' },
-  sub: { fontSize: 13, color: '#888', marginTop: 4, marginBottom: 4 },
+  container: { flex: 1, backgroundColor: Colors.bgMain, padding: 16 },
+  heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 24, color: Colors.textPrimary },
+  sectionTitle: {
+    fontSize: 11, fontWeight: 'bold', color: Colors.textMuted,
+    textTransform: 'uppercase', letterSpacing: 1,
+    marginTop: 24, marginBottom: 8,
+  },
+  row: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingVertical: 14, borderBottomWidth: 1, borderColor: Colors.border,
+    backgroundColor: Colors.bgCard, paddingHorizontal: 14, borderRadius: Radius.sm,
+    marginBottom: 2,
+  },
+  label: { fontSize: 16, color: Colors.textPrimary },
+  sub: { fontSize: 13, color: Colors.textMuted, marginTop: 4, marginBottom: 4 },
   countPicker: { flexDirection: 'row', gap: 6 },
-  countBtn: { width: 36, height: 36, borderRadius: 8, borderWidth: 1, borderColor: '#ddd', alignItems: 'center', justifyContent: 'center' },
-  countBtnActive: { backgroundColor: '#4CAF50', borderColor: '#4CAF50' },
-  countBtnText: { fontSize: 15, color: '#555' },
+  countBtn: {
+    width: 36, height: 36, borderRadius: Radius.sm,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: Colors.bgCard,
+  },
+  countBtnActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  countBtnText: { fontSize: 15, color: Colors.textSecondary },
   countBtnTextActive: { color: '#fff', fontWeight: 'bold' },
   timePicker: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  timeAdj: { fontSize: 20, color: '#4CAF50', fontWeight: 'bold', paddingHorizontal: 4 },
-  timeVal: { fontSize: 15, color: '#333', minWidth: 44, textAlign: 'center' },
-  timeSep: { fontSize: 14, color: '#999' },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#eee' },
-  infoLabel: { fontSize: 15, color: '#555' },
-  infoValue: { fontSize: 15, color: '#333', fontWeight: '600' },
+  timeAdj: { fontSize: 20, color: Colors.primary, fontWeight: 'bold', paddingHorizontal: 4 },
+  timeVal: { fontSize: 15, color: Colors.textPrimary, minWidth: 44, textAlign: 'center' },
+  timeSep: { fontSize: 14, color: Colors.textMuted },
+  editableSection: {
+    backgroundColor: Colors.bgCard, borderRadius: Radius.md,
+    borderWidth: 1, borderColor: Colors.border, overflow: 'hidden',
+  },
+  editRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingVertical: 14, paddingHorizontal: 14,
+    borderBottomWidth: 1, borderColor: Colors.border,
+  },
+  editRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  editValue: { fontSize: 15, color: Colors.primary, fontWeight: '600' },
+  chevron: { fontSize: 18, color: Colors.textMuted },
 });
