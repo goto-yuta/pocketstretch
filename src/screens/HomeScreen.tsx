@@ -55,7 +55,7 @@ export default function HomeScreen() {
 
         {/* 進捗カード */}
         <View style={[styles.progressCard, Shadow.card]}>
-          <Text style={styles.progressLabel}>今日の進捗</Text>
+          <Text style={styles.progressLabel}>💊 今日のマスト</Text>
           <Text style={styles.progressText}>
             {completedMin}<Text style={styles.progressTotal}> / {prescription.totalMinutes}分</Text>
           </Text>
@@ -82,8 +82,8 @@ export default function HomeScreen() {
               end={{ x: 1, y: 1 }}
               style={[styles.startButtonInner, Shadow.button]}
             >
-              <Text style={styles.startButtonText}>▶　ストレッチを始める</Text>
-              <Text style={styles.startButtonSub}>残り {remainingMin} 分</Text>
+              <Text style={styles.startButtonText}>▶　今すぐこなす</Text>
+              <Text style={styles.startButtonSub}>残り {remainingMin} 分 · やり切ろう</Text>
             </LinearGradient>
           </Pressable>
         )}
