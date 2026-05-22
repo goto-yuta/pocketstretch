@@ -81,7 +81,7 @@ export default function SessionScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <StretchImage bodyParts={current.bodyParts} nameJa={current.nameJa} />
+        <StretchImage bodyParts={current.bodyParts} nameJa={current.nameJa} steps={current.steps} />
         <Text style={styles.name}>{current.nameJa}</Text>
         <Text style={styles.bodyPartLabel}>{current.bodyParts.join(' · ')}</Text>
 
@@ -112,9 +112,6 @@ export default function SessionScreen() {
         )}
 
         <Text style={styles.desc}>{current.descriptionJa}</Text>
-        {current.steps.map((step, i) => (
-          <Text key={i} style={styles.step}>・{step}</Text>
-        ))}
       </ScrollView>
 
     </SafeAreaView>
@@ -147,6 +144,5 @@ const styles = StyleSheet.create({
   pauseText: { fontSize: 15, color: Colors.textSecondary, fontWeight: '600' },
   skipBtnInline: { paddingVertical: 10, paddingHorizontal: 12 },
   skipText: { fontSize: 15, color: Colors.primary, fontWeight: 'bold' },
-  desc: { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', marginTop: 8, lineHeight: 22, borderTopWidth: 1, borderTopColor: Colors.border, paddingTop: 16, width: '100%' },
-  step: { fontSize: 14, color: Colors.textSecondary, alignSelf: 'flex-start', marginTop: 8, lineHeight: 20 },
+  desc: { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginTop: 8, lineHeight: 22, borderTopWidth: 1, borderTopColor: Colors.border, paddingTop: 16, width: '100%' },
 });
