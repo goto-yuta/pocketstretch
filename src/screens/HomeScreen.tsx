@@ -1,27 +1,24 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DailyMustCard from '../components/DailyMustCard';
 import GoalSelectorModal from '../components/GoalSelectorModal';
 import { ALL_STRETCHES } from '../data/stretches';
 import { useUserStore } from '../store/useUserStore';
-import { BodyPart, RootStackParamList, Scene } from '../types';
-import { getPrescription } from '../utils/prescription';
+import { RootStackParamList } from '../types';
+import { getPrescription, getCompletedMinutes, getSessionStretchIds } from '../utils/prescription';
+import { Colors, Radius, Shadow } from '../styles/tokens';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-const SCENE_LABELS: Record<Scene, string> = {
-  office: '💼 オフィス',
-  home: '🏠 自宅',
-  serious: '💪 本格',
-};
-
-const BODY_LABELS: Record<BodyPart, string> = {
-  neck: '首', shoulder: '肩', back: '腰', hip: '股関節', leg: '脚',
-  arm: '腕', chest: '胸', core: '体幹',
-};
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'おはようございます 👋';
+  if (h < 18) return 'こんにちは ☀️';
+  return 'こんばんは 🌙';
+}
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
@@ -29,10 +26,16 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined);
+  const completedMin = getCompletedMinutes(dailyProgress.completedStretchIds, prescription.stretchIds, ALL_STRETCHES);
+  const remainingMin = Math.max(prescription.totalMinutes - completedMin, 0);
+  const isCompleted = remainingMin === 0 && prescription.totalMinutes > 0;
+  const progressRatio = prescription.totalMinutes > 0
+    ? Math.min(completedMin / prescription.totalMinutes, 1)
+    : 0;
 
-  function startSession(stretchIds: string[]) {
-    if (stretchIds.length === 0) return;
-    navigation.navigate('Session', { stretchIds });
+  function handleStart() {
+    const ids = getSessionStretchIds(prescription, dailyProgress.completedStretchIds, ALL_STRETCHES);
+    if (ids.length > 0) navigation.navigate('Session', { stretchIds: ids });
   }
 
   function handleGoalStart(stretchIds: string[]) {
@@ -42,45 +45,55 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {prescription.stretchIds.length > 0 && (
-          <DailyMustCard
-            prescription={prescription}
-            completedStretchIds={dailyProgress.completedStretchIds}
-            onStart={startSession}
-          />
+      <View style={styles.inner}>
+
+        {/* 挨拶 */}
+        <View style={styles.greeting}>
+          <Text style={styles.greetingText}>{getGreeting()}</Text>
+          <Text style={styles.greetingSub}>今日もケアを続けよう</Text>
+        </View>
+
+        {/* 進捗カード */}
+        <View style={[styles.progressCard, Shadow.card]}>
+          <Text style={styles.progressLabel}>今日の進捗</Text>
+          <Text style={styles.progressText}>
+            {completedMin}<Text style={styles.progressTotal}> / {prescription.totalMinutes}分</Text>
+          </Text>
+          <View style={styles.progressBarBg}>
+            <LinearGradient
+              colors={[Colors.primary, Colors.primaryDeep]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.progressBarFill, { width: `${progressRatio * 100}%` as any }]}
+            />
+          </View>
+        </View>
+
+        {/* メインボタン */}
+        {isCompleted ? (
+          <View style={styles.completedBox}>
+            <Text style={styles.completedText}>🎉 今日のストレッチ完了！</Text>
+          </View>
+        ) : (
+          <Pressable style={styles.startButton} onPress={handleStart}>
+            <LinearGradient
+              colors={[Colors.primary, Colors.primaryDeep]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.startButtonInner, Shadow.button]}
+            >
+              <Text style={styles.startButtonText}>▶　ストレッチを始める</Text>
+              <Text style={styles.startButtonSub}>残り {remainingMin} 分</Text>
+            </LinearGradient>
+          </Pressable>
         )}
 
-        <Pressable style={styles.goalButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.goalButtonText}>今日の気分で選ぶ →</Text>
+        {/* サブアクション */}
+        <Pressable style={styles.subButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.subButtonText}>別のストレッチをやる</Text>
         </Pressable>
 
-        <Text style={styles.sectionTitle}>シーンで探す</Text>
-        <View style={styles.row}>
-          {(['office', 'home', 'serious'] as Scene[]).map((sc) => (
-            <Pressable
-              key={sc}
-              style={styles.sceneChip}
-              onPress={() => startSession(ALL_STRETCHES.filter((s) => s.scenes.includes(sc)).map((s) => s.id))}
-            >
-              <Text style={styles.sceneChipText}>{SCENE_LABELS[sc]}</Text>
-            </Pressable>
-          ))}
-        </View>
-
-        <Text style={styles.sectionTitle}>部位で探す</Text>
-        <View style={styles.row}>
-          {(Object.keys(BODY_LABELS) as BodyPart[]).map((bp) => (
-            <Pressable
-              key={bp}
-              style={styles.bodyChip}
-              onPress={() => startSession(ALL_STRETCHES.filter((s) => s.bodyParts.includes(bp)).map((s) => s.id))}
-            >
-              <Text style={styles.bodyChipText}>{BODY_LABELS[bp]}</Text>
-            </Pressable>
-          ))}
-        </View>
-      </ScrollView>
+      </View>
 
       <GoalSelectorModal
         visible={modalVisible}
@@ -92,20 +105,55 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  goalButton: {
-    margin: 16,
-    marginTop: 8,
-    backgroundColor: '#4CAF50',
-    borderRadius: 12,
-    paddingVertical: 14,
+  container: { flex: 1, backgroundColor: Colors.bgMain },
+  inner: { flex: 1, paddingHorizontal: 20, paddingTop: 32, gap: 20 },
+  greeting: { gap: 4 },
+  greetingText: { fontSize: 20, fontWeight: '700', color: Colors.textPrimary },
+  greetingSub: { fontSize: 12, color: Colors.textMuted },
+  progressCard: {
+    backgroundColor: Colors.bgCard,
+    borderRadius: Radius.lg,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    gap: 10,
+  },
+  progressLabel: { fontSize: 11, color: Colors.textMuted, textTransform: 'uppercase', letterSpacing: 1 },
+  progressText: { fontSize: 36, fontWeight: 'bold', color: Colors.textPrimary },
+  progressTotal: { fontSize: 16, color: Colors.textMuted, fontWeight: 'normal' },
+  progressBarBg: {
+    backgroundColor: Colors.primaryLight,
+    borderRadius: Radius.full,
+    height: 6,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    borderRadius: Radius.full,
+    height: 6,
+  },
+  startButton: { borderRadius: Radius.lg, overflow: 'hidden' },
+  startButtonInner: {
+    borderRadius: Radius.lg,
+    paddingVertical: 24,
+    alignItems: 'center',
+    gap: 4,
+  },
+  startButtonText: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
+  startButtonSub: { color: 'rgba(255,255,255,0.8)', fontSize: 13 },
+  completedBox: {
+    backgroundColor: Colors.primaryLight,
+    borderRadius: Radius.lg,
+    paddingVertical: 24,
     alignItems: 'center',
   },
-  goalButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  sectionTitle: { fontSize: 17, fontWeight: 'bold', marginHorizontal: 16, marginTop: 16, marginBottom: 8 },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginHorizontal: 16, marginBottom: 8 },
-  sceneChip: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#E8F5E9', borderWidth: 1, borderColor: '#A5D6A7' },
-  sceneChipText: { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
-  bodyChip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F3E5F5', borderWidth: 1, borderColor: '#CE93D8' },
-  bodyChipText: { fontSize: 14, color: '#6A1B9A', fontWeight: '600' },
+  completedText: { fontSize: 18, fontWeight: 'bold', color: Colors.primaryDeep },
+  subButton: {
+    paddingVertical: 16,
+    borderRadius: Radius.md,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+    alignItems: 'center',
+    backgroundColor: Colors.bgCard,
+  },
+  subButtonText: { color: Colors.primary, fontSize: 15, fontWeight: '600' },
 });
