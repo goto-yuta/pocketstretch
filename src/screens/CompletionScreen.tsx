@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { scheduleNextStretchNotification } from '../notifications';
@@ -19,16 +19,20 @@ export default function CompletionScreen() {
   const { markStretchesCompleted, recordStretchCompletion, schedulerConfig } = useUserStore();
 
   const ids = route.params.completedStretchIds;
-  const totalSeconds = ids.reduce((sum, id) => {
-    const s = ALL_STRETCHES.find((s) => s.id === id);
-    return sum + (s?.durationSeconds ?? 0);
-  }, 0);
-  const totalMin = Math.max(1, Math.ceil(totalSeconds / 60));
+
+  const totalMin = useMemo(() => {
+    const totalSeconds = ids.reduce((sum, id) => {
+      const s = ALL_STRETCHES.find((s) => s.id === id);
+      return sum + (s?.durationSeconds ?? 0);
+    }, 0);
+    return Math.max(1, Math.ceil(totalSeconds / 60));
+  }, [ids]);
 
   useEffect(() => {
     markStretchesCompleted(ids);
     recordStretchCompletion();
     scheduleNextStretchNotification(new Date().toISOString(), schedulerConfig).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

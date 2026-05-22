@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ALL_STRETCHES } from '../data/stretches';
@@ -26,23 +26,24 @@ export default function GateScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined);
-  const stretchIds = prescription.stretchIds.slice(0, 3);
+  const stretchIds = useMemo(
+    () => getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined).stretchIds.slice(0, 3),
+    [bodyParts, scene, sport]
+  );
 
-  const elapsedText = lastStretchCompletedAt
-    ? (() => {
-        const totalHours = (Date.now() - new Date(lastStretchCompletedAt).getTime()) / (1000 * 60 * 60);
-        const h = Math.floor(totalHours);
-        const m = Math.floor((totalHours - h) * 60);
-        return `前回から ${h} 時間 ${m} 分経ちました`;
-      })()
-    : '今日最初のストレッチです';
+  const elapsedText = useMemo(() => {
+    if (!lastStretchCompletedAt) return '今日最初のストレッチです';
+    const totalHours = (Date.now() - new Date(lastStretchCompletedAt).getTime()) / (1000 * 60 * 60);
+    const h = Math.floor(totalHours);
+    const m = Math.floor((totalHours - h) * 60);
+    return `前回から ${h} 時間 ${m} 分経ちました`;
+  }, [lastStretchCompletedAt]);
 
-  async function handleSkip() {
+  const handleSkip = useCallback(async () => {
     recordSkip();
     await scheduleNextStretchNotification(new Date().toISOString(), schedulerConfig);
     navigation.navigate('Main');
-  }
+  }, [recordSkip, schedulerConfig, navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
