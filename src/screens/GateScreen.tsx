@@ -8,16 +8,14 @@ import { scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 import { getPrescription } from '../utils/prescription';
+import { Colors, Radius, Shadow } from '../styles/tokens';
+import PrimaryButton from '../components/PrimaryButton';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export default function GateScreen() {
   const navigation = useNavigation<Nav>();
-  const {
-    bodyParts, scene, sport,
-    schedulerConfig, lastStretchCompletedAt,
-    dailySkipUsed, lastSkipDate, recordSkip,
-  } = useUserStore();
+  const { bodyParts, scene, sport, schedulerConfig, lastStretchCompletedAt, dailySkipUsed, lastSkipDate, recordSkip } = useUserStore();
   const [skipVisible, setSkipVisible] = useState(false);
 
   const today = new Date().toISOString().slice(0, 10);
@@ -40,10 +38,6 @@ export default function GateScreen() {
       })()
     : '今日最初のストレッチです';
 
-  function handleStart() {
-    navigation.navigate('Session', { stretchIds });
-  }
-
   async function handleSkip() {
     recordSkip();
     await scheduleNextStretchNotification(new Date().toISOString(), schedulerConfig);
@@ -52,9 +46,10 @@ export default function GateScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.icon}>🧘</Text>
       <Text style={styles.title}>ストレッチの時間です</Text>
       <Text style={styles.elapsed}>{elapsedText}</Text>
-      <View style={styles.list}>
+      <View style={[styles.listCard, Shadow.card]}>
         {stretchIds.map((id) => {
           const stretch = ALL_STRETCHES.find((s) => s.id === id);
           return stretch ? (
@@ -62,11 +57,13 @@ export default function GateScreen() {
           ) : null;
         })}
       </View>
-      <TouchableOpacity style={styles.startBtn} onPress={handleStart}>
-        <Text style={styles.startText}>▶  今すぐストレッチする</Text>
-      </TouchableOpacity>
+      <PrimaryButton
+        label="▶　今すぐストレッチする"
+        onPress={() => navigation.navigate('Session', { stretchIds })}
+        style={styles.startBtn}
+      />
       {skipVisible && !effectiveSkipUsed && (
-        <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
+        <TouchableOpacity onPress={handleSkip}>
           <Text style={styles.skipText}>スキップ（本日あと 1 回）</Text>
         </TouchableOpacity>
       )}
@@ -75,16 +72,16 @@ export default function GateScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#333', marginBottom: 8 },
-  elapsed: { fontSize: 14, color: '#888', marginBottom: 32 },
-  list: { marginBottom: 32, alignSelf: 'stretch' },
-  item: { fontSize: 16, color: '#555', marginBottom: 10 },
-  startBtn: {
-    backgroundColor: '#4CAF50', borderRadius: 12,
-    paddingVertical: 16, paddingHorizontal: 40, marginBottom: 16,
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.bgMain, padding: 24 },
+  icon: { fontSize: 52, marginBottom: 8 },
+  title: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary, marginBottom: 6 },
+  elapsed: { fontSize: 13, color: Colors.textMuted, marginBottom: 24 },
+  listCard: {
+    backgroundColor: Colors.bgCard, borderRadius: Radius.md,
+    padding: 16, alignSelf: 'stretch', marginBottom: 24,
+    borderWidth: 1, borderColor: Colors.border,
   },
-  startText: { color: '#fff', fontSize: 17, fontWeight: 'bold' },
-  skipBtn: { marginTop: 8 },
-  skipText: { fontSize: 14, color: '#aaa' },
+  item: { fontSize: 15, color: Colors.textSecondary, marginBottom: 8, lineHeight: 22 },
+  startBtn: { alignSelf: 'stretch', marginBottom: 16 },
+  skipText: { fontSize: 13, color: Colors.textMuted },
 });
