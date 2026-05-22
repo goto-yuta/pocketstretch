@@ -14,6 +14,8 @@ import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SessionScreen from '../screens/SessionScreen';
 import CompletionScreen from '../screens/CompletionScreen';
+import EditScene from '../screens/EditScene';
+import EditBodyParts from '../screens/EditBodyParts';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -66,6 +68,16 @@ export default function RootNavigator() {
               options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
             />
             <RootStack.Screen name="Completion" component={CompletionScreen} />
+            <RootStack.Screen
+              name="EditScene"
+              component={EditScene}
+              options={{ presentation: 'modal' }}
+            />
+            <RootStack.Screen
+              name="EditBodyParts"
+              component={EditBodyParts}
+              options={{ presentation: 'modal' }}
+            />
           </>
         )}
       </RootStack.Navigator>

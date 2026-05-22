@@ -31,6 +31,8 @@ export type RootStackParamList = {
   Gate: undefined;
   Session: { stretchIds: string[] };
   Completion: { completedStretchIds: string[] };
+  EditScene: undefined;
+  EditBodyParts: undefined;
 };
 
 export type OnboardingStackParamList = {
