@@ -25,21 +25,23 @@ export default function Step4Notifications() {
 
   async function handleEnable() {
     setLoading(true);
-    const granted = await requestPermissions();
-    if (!granted) {
-      Alert.alert(
-        '通知が許可されていません',
-        '設定アプリから通知を許可してください',
-        [{ text: '設定を開く', onPress: () => Linking.openSettings() }, { text: 'キャンセル' }]
-      );
+    try {
+      const granted = await requestPermissions();
+      if (!granted) {
+        Alert.alert(
+          '通知が許可されていません',
+          '設定アプリから通知を許可してください',
+          [{ text: '設定を開く', onPress: () => Linking.openSettings() }, { text: 'キャンセル' }]
+        );
+        return;
+      }
+      await scheduleNotifications(times);
+      setNotificationEnabled(true);
+      setNotificationTimes(times);
+      completeOnboarding();
+    } finally {
       setLoading(false);
-      return;
     }
-    await scheduleNotifications(times);
-    setNotificationEnabled(true);
-    setNotificationTimes(times);
-    completeOnboarding();
-    setLoading(false);
   }
 
   function handleSkip() {
@@ -54,7 +56,7 @@ export default function Step4Notifications() {
       <Text style={styles.subtitle}>時間を調整できます</Text>
       <View style={styles.timesRow}>
         {times.map((t, i) => (
-          <View key={i} style={[styles.timeCard, Shadow.card]}>
+          <View key={t} style={[styles.timeCard, Shadow.card]}>
             <TouchableOpacity onPress={() => updateTime(i, 1)} style={styles.adj}>
               <Text style={styles.adjText}>＋</Text>
             </TouchableOpacity>
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 10,
     alignItems: 'center', minWidth: 80,
   },
-  adj: { paddingVertical: 4 },
+  adj: { paddingVertical: 12 },
   adjText: { fontSize: 20, color: Colors.primary, fontWeight: 'bold' },
   timeText: { fontSize: 20, fontWeight: '700', color: Colors.primary, marginVertical: 4 },
   note: { textAlign: 'center', color: Colors.textMuted, fontSize: 12, marginBottom: 32 },
