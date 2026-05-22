@@ -14,6 +14,7 @@ const SCENE_LABEL: Record<string, string> = {
 };
 const BODY_LABEL: Record<string, string> = {
   neck: '首', shoulder: '肩', back: '腰', hip: '股関節', leg: '脚',
+  arm: '腕', chest: '胸', core: '体幹',
 };
 
 function formatCountdown(nextDate: Date): string {

@@ -13,10 +13,10 @@ const SCENES: { id: Scene; label: string; emoji: string; desc: string }[] = [
 
 export default function EditScene() {
   const navigation = useNavigation();
-  const setScene = useUserStore((s) => s.setScene);
+  const { scene, setScene } = useUserStore((s) => ({ scene: s.scene, setScene: s.setScene }));
 
-  function handleSelect(scene: Scene) {
-    setScene(scene);
+  function handleSelect(id: Scene) {
+    setScene(id);
     navigation.goBack();
   }
 
@@ -24,15 +24,23 @@ export default function EditScene() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>シーンを変更</Text>
       <View style={styles.list}>
-        {SCENES.map(({ id, label, emoji, desc }) => (
-          <Pressable key={id} style={styles.card} onPress={() => handleSelect(id)}>
-            <Text style={styles.emoji}>{emoji}</Text>
-            <View>
-              <Text style={styles.label}>{label}</Text>
-              <Text style={styles.desc}>{desc}</Text>
-            </View>
-          </Pressable>
-        ))}
+        {SCENES.map(({ id, label, emoji, desc }) => {
+          const active = id === scene;
+          return (
+            <Pressable
+              key={id}
+              style={[styles.card, active && styles.cardActive]}
+              onPress={() => handleSelect(id)}
+            >
+              <Text style={styles.emoji}>{emoji}</Text>
+              <View style={styles.textColumn}>
+                <Text style={[styles.label, active && styles.labelActive]}>{label}</Text>
+                <Text style={styles.desc}>{desc}</Text>
+              </View>
+              {active && <Text style={styles.check}>✓</Text>}
+            </Pressable>
+          );
+        })}
       </View>
     </SafeAreaView>
   );
@@ -47,7 +55,11 @@ const styles = StyleSheet.create({
     padding: 20, borderRadius: Radius.md,
     borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.bgCard,
   },
+  cardActive: { borderColor: Colors.primary, backgroundColor: Colors.primaryLight },
   emoji: { fontSize: 32 },
+  textColumn: { flex: 1 },
   label: { fontSize: 17, fontWeight: 'bold', color: Colors.textPrimary },
+  labelActive: { color: Colors.primaryDeep },
   desc: { fontSize: 13, color: Colors.textMuted, marginTop: 4 },
+  check: { fontSize: 18, color: Colors.primary, fontWeight: 'bold' },
 });

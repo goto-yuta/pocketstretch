@@ -56,7 +56,7 @@ export default function Step4Notifications() {
       <Text style={styles.subtitle}>時間を調整できます</Text>
       <View style={styles.timesRow}>
         {times.map((t, i) => (
-          <View key={t} style={[styles.timeCard, Shadow.card]}>
+          <View key={i} style={[styles.timeCard, Shadow.card]}>
             <TouchableOpacity onPress={() => updateTime(i, 1)} style={styles.adj}>
               <Text style={styles.adjText}>＋</Text>
             </TouchableOpacity>

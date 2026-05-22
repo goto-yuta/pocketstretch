@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { Colors } from '../styles/tokens';
 import { useUserStore } from '../store/useUserStore';
 import { MainTabParamList, OnboardingStackParamList, RootStackParamList } from '../types';
 import { shouldShowGate } from '../utils/scheduler';
@@ -34,7 +35,7 @@ function OnboardingNavigator() {
 
 function MainTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: Colors.primary, tabBarInactiveTintColor: Colors.textMuted }}>
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'ホーム' }} />
       <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: '設定' }} />
     </Tab.Navigator>

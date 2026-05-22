@@ -14,12 +14,12 @@ export default function PrimaryButton({ label, onPress, disabled = false, style 
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled} activeOpacity={0.85} style={style}>
       <LinearGradient
-        colors={disabled ? ['#ccc', '#aaa'] : [Colors.primary, Colors.primaryDeep]}
+        colors={disabled ? [Colors.border, Colors.border] : [Colors.primary, Colors.primaryDeep]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.gradient, Shadow.button]}
       >
-        <Text style={styles.text}>{label}</Text>
+        <Text style={[styles.text, disabled && styles.textDisabled]}>{label}</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -32,4 +32,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  textDisabled: { color: Colors.textSecondary },
 });
