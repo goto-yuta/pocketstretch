@@ -1,11 +1,13 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
-import React, { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CountdownTimer from '../components/CountdownTimer';
+import StretchImage from '../components/StretchImage';
 import { ALL_STRETCHES } from '../data/stretches';
+import { Colors, Radius } from '../styles/tokens';
 import { RootStackParamList } from '../types';
 
 type Route = RouteProp<RootStackParamList, 'Session'>;
@@ -18,9 +20,34 @@ export default function SessionScreen() {
   const stretches = route.params.stretchIds
     .map((id) => ALL_STRETCHES.find((s) => s.id === id))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
+
   const [index, setIndex] = useState(0);
-  const [running, setRunning] = useState(true);
+  const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [readyCount, setReadyCount] = useState<number | null>(3);
+  const readyRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    startReady();
+    return () => { if (readyRef.current) clearInterval(readyRef.current); };
+  }, [index]);
+
+  function startReady() {
+    setRunning(false);
+    setPaused(false);
+    setReadyCount(3);
+    let count = 3;
+    readyRef.current = setInterval(() => {
+      count -= 1;
+      if (count <= 0) {
+        clearInterval(readyRef.current!);
+        setReadyCount(null);
+        setRunning(true);
+      } else {
+        setReadyCount(count);
+      }
+    }, 1000);
+  }
 
   const current = stretches[index];
 
@@ -32,7 +59,6 @@ export default function SessionScreen() {
     } else {
       setRunning(false);
       setIndex((i) => i + 1);
-      setTimeout(() => setRunning(true), 400);
     }
   }
 
@@ -55,42 +81,72 @@ export default function SessionScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Image source={current.image} style={styles.image} resizeMode="contain" />
+        <StretchImage bodyParts={current.bodyParts} nameJa={current.nameJa} />
         <Text style={styles.name}>{current.nameJa}</Text>
-        <CountdownTimer
-          key={index}
-          durationSeconds={current.durationSeconds}
-          running={running && !paused}
-          onComplete={advance}
-        />
-        <TouchableOpacity style={styles.pauseBtn} onPress={() => setPaused((p) => !p)}>
-          <Text style={styles.pauseText}>{paused ? '▶  再開' : '⏸  一時停止'}</Text>
-        </TouchableOpacity>
+        <Text style={styles.bodyPartLabel}>{current.bodyParts.join(' · ')}</Text>
+
+        {readyCount !== null ? (
+          <View style={styles.readyContainer}>
+            <Text style={styles.readyNumber}>{readyCount}</Text>
+            <Text style={styles.readyLabel}>準備して</Text>
+          </View>
+        ) : (
+          <>
+            <CountdownTimer
+              key={index}
+              durationSeconds={current.durationSeconds}
+              running={running && !paused}
+              onComplete={advance}
+            />
+            {readyCount === null && (
+              <View style={styles.actionRow}>
+                <TouchableOpacity style={styles.pauseBtn} onPress={() => setPaused((p) => !p)}>
+                  <Text style={styles.pauseText}>{paused ? '▶  再開' : '⏸  一時停止'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.skipBtnInline} onPress={advance}>
+                  <Text style={styles.skipText}>スキップ →</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </>
+        )}
+
         <Text style={styles.desc}>{current.descriptionJa}</Text>
         {current.steps.map((step, i) => (
           <Text key={i} style={styles.step}>・{step}</Text>
         ))}
       </ScrollView>
 
-      <TouchableOpacity style={styles.skipBtn} onPress={advance}>
-        <Text style={styles.skipText}>スキップ →</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: Colors.bgMain },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
-  progress: { fontSize: 16, color: '#555' },
-  endBtn: { fontSize: 15, color: '#F44336', fontWeight: 'bold' },
+  progress: { fontSize: 16, color: Colors.textMuted, fontWeight: '600' },
+  endBtn: { fontSize: 15, color: Colors.primaryDeep, fontWeight: 'bold' },
   content: { alignItems: 'center', paddingHorizontal: 24, paddingBottom: 100 },
-  image: { width: '100%', height: 220, marginBottom: 20, borderRadius: 16 },
-  name: { fontSize: 22, fontWeight: 'bold', color: '#333', marginBottom: 8, textAlign: 'center' },
-  pauseBtn: { marginBottom: 16 },
-  pauseText: { fontSize: 16, color: '#4CAF50', fontWeight: 'bold' },
-  desc: { fontSize: 15, color: '#555', textAlign: 'center', marginTop: 8, lineHeight: 22 },
-  step: { fontSize: 14, color: '#666', alignSelf: 'flex-start', marginTop: 8, lineHeight: 20 },
-  skipBtn: { position: 'absolute', bottom: 32, right: 24 },
-  skipText: { fontSize: 15, color: '#4CAF50', fontWeight: 'bold' },
+  name: { fontSize: 22, fontWeight: 'bold', color: Colors.textPrimary, marginBottom: 4, textAlign: 'center' },
+  bodyPartLabel: { fontSize: 13, color: Colors.textMuted, textAlign: 'center', marginBottom: 8 },
+  readyContainer: {
+    width: 160, height: 160, borderRadius: 80,
+    backgroundColor: Colors.primaryLight,
+    alignItems: 'center', justifyContent: 'center', marginVertical: 20,
+  },
+  readyNumber: { fontSize: 64, fontWeight: 'bold', color: Colors.primaryDeep },
+  readyLabel: { fontSize: 14, color: Colors.primary, marginTop: 4 },
+  actionRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%', paddingHorizontal: 8, marginBottom: 16,
+  },
+  pauseBtn: {
+    backgroundColor: Colors.bgCard, borderWidth: 1.5, borderColor: Colors.border,
+    borderRadius: Radius.md, paddingVertical: 10, paddingHorizontal: 20,
+  },
+  pauseText: { fontSize: 15, color: Colors.textSecondary, fontWeight: '600' },
+  skipBtnInline: { paddingVertical: 10, paddingHorizontal: 12 },
+  skipText: { fontSize: 15, color: Colors.primary, fontWeight: 'bold' },
+  desc: { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', marginTop: 8, lineHeight: 22, borderTopWidth: 1, borderTopColor: Colors.border, paddingTop: 16, width: '100%' },
+  step: { fontSize: 14, color: Colors.textSecondary, alignSelf: 'flex-start', marginTop: 8, lineHeight: 20 },
 });

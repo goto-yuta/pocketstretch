@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { Colors } from '../styles/tokens';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -72,7 +73,7 @@ export default function CountdownTimer({ durationSeconds, onComplete, running }:
           cx={SIZE / 2}
           cy={SIZE / 2}
           r={RADIUS}
-          stroke="#e0e0e0"
+          stroke={Colors.primaryLight}
           strokeWidth={STROKE}
           fill="none"
         />
@@ -80,7 +81,7 @@ export default function CountdownTimer({ durationSeconds, onComplete, running }:
           cx={SIZE / 2}
           cy={SIZE / 2}
           r={RADIUS}
-          stroke="#4CAF50"
+          stroke={Colors.primary}
           strokeWidth={STROKE}
           fill="none"
           strokeDasharray={`${CIRCUM} ${CIRCUM}`}
@@ -110,6 +111,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
   },
-  number: { fontSize: 36, fontWeight: 'bold', color: '#2E7D32' },
-  label: { fontSize: 12, color: '#555' },
+  number: { fontSize: 36, fontWeight: 'bold', color: Colors.primary },
+  label: { fontSize: 12, color: Colors.textMuted },
 });
