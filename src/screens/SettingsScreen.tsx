@@ -96,7 +96,7 @@ export default function SettingsScreen() {
           value={schedulerConfig.enabled}
           onValueChange={(v) => updateSchedulerConfig({ enabled: v })}
           trackColor={{ false: Colors.border, true: Colors.primaryLight }}
-          thumbColor={schedulerConfig.enabled ? Colors.primary : '#fff'}
+          thumbColor={schedulerConfig.enabled ? Colors.primary : Colors.bgCard}
         />
       </View>
 
@@ -154,7 +154,7 @@ export default function SettingsScreen() {
           onValueChange={toggleNotifications}
           disabled={loading}
           trackColor={{ false: Colors.border, true: Colors.primaryLight }}
-          thumbColor={notificationEnabled ? Colors.primary : '#fff'}
+          thumbColor={notificationEnabled ? Colors.primary : Colors.bgCard}
         />
       </View>
       {notificationEnabled && (
@@ -174,7 +174,7 @@ export default function SettingsScreen() {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.editRow, { borderBottomWidth: 0 }]}
+          style={styles.editRowLast}
           onPress={() => navigation.navigate('EditBodyParts')}
         >
           <Text style={styles.label}>気になる部位</Text>
@@ -226,6 +226,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingVertical: 14, paddingHorizontal: 14,
     borderBottomWidth: 1, borderColor: Colors.border,
+  },
+  editRowLast: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingVertical: 14, paddingHorizontal: 14,
+    borderBottomWidth: 0,
   },
   editRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   editValue: { fontSize: 15, color: Colors.primary, fontWeight: '600' },
