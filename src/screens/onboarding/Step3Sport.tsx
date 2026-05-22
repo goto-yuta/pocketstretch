@@ -14,6 +14,8 @@ import { useNavigation } from '@react-navigation/native';
 import { SPORT_SUGGESTIONS, normalizeSport } from '../../utils/prescription';
 import { useUserStore } from '../../store/useUserStore';
 import { OnboardingStackParamList } from '../../types';
+import OnboardingProgressBar from '../../components/OnboardingProgressBar';
+import { Colors, Radius } from '../../styles/tokens';
 
 type Nav = NativeStackNavigationProp<OnboardingStackParamList>;
 
@@ -40,6 +42,7 @@ export default function Step3Sport() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <OnboardingProgressBar current={3} total={4} />
       <Text style={styles.title}>スポーツを教えてください</Text>
       <Text style={styles.subtitle}>取り組んでいるスポーツに合わせたケアを処方します</Text>
 
@@ -76,26 +79,20 @@ export default function Step3Sport() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24 },
-  title: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#888', textAlign: 'center', marginBottom: 24 },
+  container: { flex: 1, backgroundColor: Colors.bgMain, padding: 24 },
+  title: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginBottom: 8, color: Colors.textPrimary },
+  subtitle: { fontSize: 14, color: Colors.textMuted, textAlign: 'center', marginBottom: 24 },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    marginBottom: 12,
+    borderWidth: 1.5, borderColor: Colors.border, borderRadius: Radius.md,
+    paddingHorizontal: 16, paddingVertical: 12, fontSize: 16,
+    marginBottom: 12, backgroundColor: Colors.bgCard, color: Colors.textPrimary,
   },
   list: { flex: 1 },
   suggestion: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingVertical: 14, paddingHorizontal: 16,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
-  suggestionText: { fontSize: 16, color: '#333' },
+  suggestionText: { fontSize: 16, color: Colors.textPrimary },
   skip: { alignItems: 'center', paddingVertical: 16 },
-  skipText: { color: '#aaa', fontSize: 15 },
+  skipText: { color: Colors.textMuted, fontSize: 15 },
 });
