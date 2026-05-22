@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { ALL_STRETCHES } from '../data/stretches';
+import { Colors, Radius } from '../styles/tokens';
 import { DurationFilter, Goal } from '../types';
 import { applyDurationFilter, filterByGoals } from '../utils/filterStretches';
 
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.bgCard,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
@@ -170,12 +171,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.textPrimary,
   },
   sectionLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 10,
     marginTop: 16,
   },
@@ -183,32 +184,32 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 8,
     paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
+    borderRadius: Radius.full,
+    backgroundColor: Colors.bgMain,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.border,
   },
-  chipSelected: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
-  chipText: { fontSize: 14, color: '#555' },
-  chipTextSelected: { color: '#2E7D32', fontWeight: '600' },
+  chipSelected: { backgroundColor: Colors.primaryLight, borderColor: Colors.primary },
+  chipText: { fontSize: 14, color: Colors.textSecondary },
+  chipTextSelected: { color: Colors.primaryDeep, fontWeight: '600' },
   durationRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
   durationChip: {
     paddingVertical: 8,
     paddingHorizontal: 20,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
+    borderRadius: Radius.full,
+    backgroundColor: Colors.bgMain,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.border,
   },
   startButton: {
     marginTop: 24,
-    backgroundColor: '#4CAF50',
-    borderRadius: 12,
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.md,
     paddingVertical: 16,
     alignItems: 'center',
   },
   startButtonText: { color: '#fff', fontSize: 17, fontWeight: 'bold' },
   skipButton: { marginTop: 12, alignItems: 'center', paddingVertical: 8 },
-  skipText: { color: '#999', fontSize: 14 },
-  emptyText: { marginTop: 24, textAlign: 'center', color: '#999', fontSize: 14 },
+  skipText: { color: Colors.textMuted, fontSize: 14 },
+  emptyText: { marginTop: 24, textAlign: 'center', color: Colors.textMuted, fontSize: 14 },
 });

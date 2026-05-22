@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ALL_STRETCHES } from '../data/stretches';
+import { Colors, Radius } from '../styles/tokens';
 import { Prescription, getCompletedMinutes, getSessionStretchIds } from '../utils/prescription';
 
 interface Props {
@@ -74,8 +75,8 @@ export default function DailyMustCard({ prescription, completedStretchIds, onSta
 const styles = StyleSheet.create({
   card: {
     margin: 16,
-    backgroundColor: '#2E7D32',
-    borderRadius: 16,
+    backgroundColor: Colors.primaryDeep,
+    borderRadius: Radius.lg,
     padding: 16,
   },
   label: {
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.6)',
   },
   checkMark: {
-    color: '#2E7D32',
+    color: Colors.primaryDeep,
     fontSize: 11,
     fontWeight: 'bold',
   },
