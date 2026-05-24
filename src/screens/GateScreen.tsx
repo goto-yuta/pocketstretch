@@ -9,6 +9,7 @@ import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 import { getPrescription } from '../utils/prescription';
 import { getLocalDateString } from '../utils/date';
+import { shouldShowGate } from '../utils/scheduler';
 import { Colors, Radius, Shadow } from '../styles/tokens';
 import PrimaryButton from '../components/PrimaryButton';
 
@@ -26,6 +27,12 @@ export default function GateScreen() {
     const timer = setTimeout(() => setSkipVisible(true), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!shouldShowGate(lastStretchCompletedAt, schedulerConfig)) {
+      navigation.navigate('Main');
+    }
+  }, [lastStretchCompletedAt, schedulerConfig, navigation]);
 
   const stretchIds = useMemo(
     () => getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined).stretchIds.slice(0, 3),

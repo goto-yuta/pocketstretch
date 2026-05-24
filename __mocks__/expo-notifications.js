@@ -28,6 +28,7 @@ module.exports = {
   setNotificationHandler: jest.fn(),
   addNotificationReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
   addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  getLastNotificationResponseAsync: jest.fn(() => Promise.resolve(null)),
   removeNotificationSubscription: jest.fn(),
   setBadgeCountAsync: jest.fn(() => Promise.resolve(true)),
   getBadgeCountAsync: jest.fn(() => Promise.resolve(0)),
