@@ -29,8 +29,6 @@ interface UserStore extends UserProfile {
   setBodyParts: (parts: BodyPart[]) => void;
   setScene: (scene: Scene) => void;
   setSport: (sport: string) => void;
-  setNotificationEnabled: (enabled: boolean) => void;
-  setNotificationTimes: (times: string[]) => void;
   setSchedulerConfig: (config: SchedulerConfig) => void;
   completeOnboarding: () => void;
   markStretchesCompleted: (ids: string[]) => void;
@@ -45,8 +43,6 @@ export const useUserStore = create<UserStore>()(
       bodyParts: [],
       scene: 'office',
       sport: '',
-      notificationEnabled: false,
-      notificationTimes: [],
       schedulerConfig: DEFAULT_SCHEDULER_CONFIG,
       dailyProgress: { date: '', completedStretchIds: [] },
       lastStretchCompletedAt: null,
@@ -59,8 +55,6 @@ export const useUserStore = create<UserStore>()(
       setBodyParts: (bodyParts) => set({ bodyParts }),
       setScene: (scene) => set({ scene }),
       setSport: (sport) => set({ sport }),
-      setNotificationEnabled: (notificationEnabled) => set({ notificationEnabled }),
-      setNotificationTimes: (notificationTimes) => set({ notificationTimes }),
       setSchedulerConfig: (schedulerConfig) => set({ schedulerConfig }),
       completeOnboarding: () => set({ onboardingCompleted: true }),
       markStretchesCompleted: (ids) =>

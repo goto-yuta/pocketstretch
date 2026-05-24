@@ -9,8 +9,6 @@ describe('useUserStore', () => {
       bodyParts: [],
       scene: 'office',
       sport: '',
-      notificationEnabled: false,
-      notificationTimes: [],
       schedulerConfig: {
         enabled: true,
         dailyCount: 3,
@@ -46,11 +44,6 @@ describe('useUserStore', () => {
     expect(result.current.onboardingCompleted).toBe(true);
   });
 
-  it('sets notification times', () => {
-    const { result } = renderHook(() => useUserStore());
-    act(() => result.current.setNotificationTimes(['09:00', '14:00']));
-    expect(result.current.notificationTimes).toEqual(['09:00', '14:00']);
-  });
 });
 
 describe('markStretchesCompleted', () => {
@@ -94,8 +87,6 @@ describe('setSport', () => {
       bodyParts: [],
       scene: 'office',
       sport: '',
-      notificationEnabled: false,
-      notificationTimes: [],
       dailyProgress: { date: '', completedStretchIds: [] },
     });
   });

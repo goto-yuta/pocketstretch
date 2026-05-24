@@ -20,8 +20,6 @@ export interface UserProfile {
   bodyParts: BodyPart[];
   scene: Scene;
   sport: string;
-  notificationEnabled: boolean;
-  notificationTimes: string[];
   schedulerConfig: SchedulerConfig;
 }
 
