@@ -21,6 +21,7 @@ export default function Step4Notifications() {
           '設定アプリから通知を許可してください',
           [{ text: '設定を開く', onPress: () => Linking.openSettings() }, { text: 'あとで' }],
         );
+        setSchedulerConfig({ ...schedulerConfig, enabled: false });
         completeOnboarding();
         return;
       }

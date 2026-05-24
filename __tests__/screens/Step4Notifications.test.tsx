@@ -38,4 +38,5 @@ test('権限がblockedでもオンボーディングは完了する', async () =
   const { getByText } = render(<Step4Notifications />);
   fireEvent.press(getByText('通知を有効にする'));
   await waitFor(() => expect(mockComplete).toHaveBeenCalled());
+  expect(mockSetSched).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
 });
