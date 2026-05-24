@@ -21,6 +21,10 @@ describe('useUserStore', () => {
       lastStretchCompletedAt: null,
       dailySkipUsed: false,
       lastSkipDate: null,
+      currentStreak: 0,
+      longestStreak: 0,
+      totalSessions: 0,
+      lastCompletedDate: null,
     });
   });
 
@@ -149,5 +153,36 @@ describe('recordSkip', () => {
     act(() => result.current.recordSkip());
     const ts = new Date(result.current.lastStretchCompletedAt!).getTime();
     expect(ts).toBeGreaterThanOrEqual(before);
+  });
+});
+
+describe('recordStretchCompletion streak tracking', () => {
+  beforeEach(() => {
+    useUserStore.setState({ currentStreak: 0, longestStreak: 0, totalSessions: 0, lastCompletedDate: null });
+  });
+
+  it('starts the streak at 1 on first completion today', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(1);
+    expect(result.current.totalSessions).toBe(1);
+    expect(result.current.lastCompletedDate).toBe(getLocalDateString());
+  });
+
+  it('does not advance the streak twice on the same day', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(1);
+    expect(result.current.totalSessions).toBe(2);
+  });
+
+  it('increments the streak when yesterday was completed', () => {
+    const yesterday = getLocalDateString(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    useUserStore.setState({ currentStreak: 4, longestStreak: 4, totalSessions: 9, lastCompletedDate: yesterday });
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(5);
+    expect(result.current.longestStreak).toBe(5);
   });
 });

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { BodyPart, Scene, SchedulerConfig, UserProfile } from '../types';
 import { getLocalDateString } from '../utils/date';
+import { nextStreakState, StreakState } from '../utils/streak';
 
 interface DailyProgress {
   date: string;
@@ -21,6 +22,10 @@ interface UserStore extends UserProfile {
   lastStretchCompletedAt: string | null;
   dailySkipUsed: boolean;
   lastSkipDate: string | null;
+  currentStreak: number;
+  longestStreak: number;
+  totalSessions: number;
+  lastCompletedDate: string | null;
   setBodyParts: (parts: BodyPart[]) => void;
   setScene: (scene: Scene) => void;
   setSport: (sport: string) => void;
@@ -47,6 +52,10 @@ export const useUserStore = create<UserStore>()(
       lastStretchCompletedAt: null,
       dailySkipUsed: false,
       lastSkipDate: null,
+      currentStreak: 0,
+      longestStreak: 0,
+      totalSessions: 0,
+      lastCompletedDate: null,
       setBodyParts: (bodyParts) => set({ bodyParts }),
       setScene: (scene) => set({ scene }),
       setSport: (sport) => set({ sport }),
@@ -63,7 +72,16 @@ export const useUserStore = create<UserStore>()(
           return { dailyProgress: { date: today, completedStretchIds: merged } };
         }),
       recordStretchCompletion: () =>
-        set({ lastStretchCompletedAt: new Date().toISOString() }),
+        set((state) => {
+          const prev: StreakState = {
+            currentStreak: state.currentStreak,
+            longestStreak: state.longestStreak,
+            totalSessions: state.totalSessions,
+            lastCompletedDate: state.lastCompletedDate,
+          };
+          const next = nextStreakState(prev, getLocalDateString());
+          return { ...next, lastStretchCompletedAt: new Date().toISOString() };
+        }),
       recordSkip: () =>
         set(() => {
           const today = getLocalDateString();
@@ -77,6 +95,20 @@ export const useUserStore = create<UserStore>()(
     {
       name: 'user-profile',
       storage: createJSONStorage(() => AsyncStorage),
+      version: 1,
+      migrate: (persisted: any, fromVersion: number) => {
+        let state = persisted;
+        if (fromVersion < 1) {
+          state = {
+            ...state,
+            currentStreak: 0,
+            longestStreak: 0,
+            totalSessions: 0,
+            lastCompletedDate: null,
+          };
+        }
+        return state;
+      },
     },
   ),
 );
