@@ -22,7 +22,7 @@ function getGreeting(): string {
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
-  const { bodyParts, scene, sport, dailyProgress } = useUserStore();
+  const { bodyParts, scene, sport, dailyProgress, currentStreak } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
 
   const prescription = getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined);
@@ -51,6 +51,9 @@ export default function HomeScreen() {
         <View style={styles.greeting}>
           <Text style={styles.greetingText}>{getGreeting()}</Text>
           <Text style={styles.greetingSub}>今日もケアを続けよう</Text>
+          {currentStreak > 0 && (
+            <Text style={styles.streakBadge}>🔥 {currentStreak}日連続</Text>
+          )}
         </View>
 
         {/* 進捗カード */}
@@ -110,6 +113,7 @@ const styles = StyleSheet.create({
   greeting: { gap: 4 },
   greetingText: { fontSize: 20, fontWeight: '700', color: Colors.textPrimary },
   greetingSub: { fontSize: 12, color: Colors.textMuted },
+  streakBadge: { fontSize: 13, fontWeight: '700', color: Colors.primaryDeep, marginTop: 2 },
   progressCard: {
     backgroundColor: Colors.bgCard,
     borderRadius: Radius.lg,

@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react-native';
 import { useUserStore } from '../src/store/useUserStore';
+import { getLocalDateString } from '../src/utils/date';
 
 describe('useUserStore', () => {
   beforeEach(() => {
@@ -8,8 +9,6 @@ describe('useUserStore', () => {
       bodyParts: [],
       scene: 'office',
       sport: '',
-      notificationEnabled: false,
-      notificationTimes: [],
       schedulerConfig: {
         enabled: true,
         dailyCount: 3,
@@ -20,6 +19,11 @@ describe('useUserStore', () => {
       lastStretchCompletedAt: null,
       dailySkipUsed: false,
       lastSkipDate: null,
+      currentStreak: 0,
+      longestStreak: 0,
+      totalSessions: 0,
+      lastCompletedDate: null,
+      lastReviewRequestAt: null,
     });
   });
 
@@ -41,11 +45,6 @@ describe('useUserStore', () => {
     expect(result.current.onboardingCompleted).toBe(true);
   });
 
-  it('sets notification times', () => {
-    const { result } = renderHook(() => useUserStore());
-    act(() => result.current.setNotificationTimes(['09:00', '14:00']));
-    expect(result.current.notificationTimes).toEqual(['09:00', '14:00']);
-  });
 });
 
 describe('markStretchesCompleted', () => {
@@ -77,7 +76,7 @@ describe('markStretchesCompleted', () => {
   it('sets date to today', () => {
     const { result } = renderHook(() => useUserStore());
     act(() => result.current.markStretchesCompleted(['chin-tuck']));
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     expect(result.current.dailyProgress.date).toBe(today);
   });
 });
@@ -89,8 +88,6 @@ describe('setSport', () => {
       bodyParts: [],
       scene: 'office',
       sport: '',
-      notificationEnabled: false,
-      notificationTimes: [],
       dailyProgress: { date: '', completedStretchIds: [] },
     });
   });
@@ -140,7 +137,7 @@ describe('recordSkip', () => {
     const { result } = renderHook(() => useUserStore());
     act(() => result.current.recordSkip());
     expect(result.current.dailySkipUsed).toBe(true);
-    expect(result.current.lastSkipDate).toBe(new Date().toISOString().slice(0, 10));
+    expect(result.current.lastSkipDate).toBe(getLocalDateString());
   });
   it('sets lastStretchCompletedAt to reset the interval timer', () => {
     const before = Date.now();
@@ -148,5 +145,50 @@ describe('recordSkip', () => {
     act(() => result.current.recordSkip());
     const ts = new Date(result.current.lastStretchCompletedAt!).getTime();
     expect(ts).toBeGreaterThanOrEqual(before);
+  });
+});
+
+describe('recordReviewRequest', () => {
+  beforeEach(() => {
+    useUserStore.setState({ lastReviewRequestAt: null });
+  });
+
+  it('stamps lastReviewRequestAt with an ISO time', () => {
+    const { result } = renderHook(() => useUserStore());
+    expect(result.current.lastReviewRequestAt).toBeNull();
+    act(() => result.current.recordReviewRequest());
+    expect(typeof result.current.lastReviewRequestAt).toBe('string');
+    expect(Number.isNaN(Date.parse(result.current.lastReviewRequestAt!))).toBe(false);
+  });
+});
+
+describe('recordStretchCompletion streak tracking', () => {
+  beforeEach(() => {
+    useUserStore.setState({ currentStreak: 0, longestStreak: 0, totalSessions: 0, lastCompletedDate: null });
+  });
+
+  it('starts the streak at 1 on first completion today', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(1);
+    expect(result.current.totalSessions).toBe(1);
+    expect(result.current.lastCompletedDate).toBe(getLocalDateString());
+  });
+
+  it('does not advance the streak twice on the same day', () => {
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(1);
+    expect(result.current.totalSessions).toBe(2);
+  });
+
+  it('increments the streak when yesterday was completed', () => {
+    const yesterday = getLocalDateString(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    useUserStore.setState({ currentStreak: 4, longestStreak: 4, totalSessions: 9, lastCompletedDate: yesterday });
+    const { result } = renderHook(() => useUserStore());
+    act(() => result.current.recordStretchCompletion());
+    expect(result.current.currentStreak).toBe(5);
+    expect(result.current.longestStreak).toBe(5);
   });
 });

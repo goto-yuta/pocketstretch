@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CountdownTimer from '../components/CountdownTimer';
 import StretchImage from '../components/StretchImage';
 import { ALL_STRETCHES } from '../data/stretches';
+import { useUserStore } from '../store/useUserStore';
 import { Colors, Radius } from '../styles/tokens';
 import { RootStackParamList } from '../types';
 
@@ -17,6 +18,7 @@ export default function SessionScreen() {
   useKeepAwake();
   const route = useRoute<Route>();
   const navigation = useNavigation<Nav>();
+  const { markStretchesCompleted, recordStretchCompletion } = useUserStore();
   const stretches = route.params.stretchIds
     .map((id) => ALL_STRETCHES.find((s) => s.id === id))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
@@ -26,6 +28,7 @@ export default function SessionScreen() {
   const [paused, setPaused] = useState(false);
   const [readyCount, setReadyCount] = useState<number | null>(3);
   const readyRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const completedRef = useRef(false);
 
   useEffect(() => {
     startReady();
@@ -54,7 +57,11 @@ export default function SessionScreen() {
   function advance() {
     setPaused(false);
     if (index + 1 >= stretches.length) {
+      if (completedRef.current) return;
+      completedRef.current = true;
       const uniqueIds = Array.from(new Set(stretches.map((s) => s.id)));
+      markStretchesCompleted(uniqueIds);
+      recordStretchCompletion();
       navigation.replace('Completion', { completedStretchIds: uniqueIds });
     } else {
       setRunning(false);
@@ -75,7 +82,11 @@ export default function SessionScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.progress}>{index + 1} / {stretches.length}</Text>
-        <TouchableOpacity onPress={handleEnd}>
+        <TouchableOpacity
+          onPress={handleEnd}
+          accessibilityRole="button"
+          accessibilityLabel="セッションを終了"
+        >
           <Text style={styles.endBtn}>終了</Text>
         </TouchableOpacity>
       </View>
@@ -100,10 +111,20 @@ export default function SessionScreen() {
             />
             {readyCount === null && (
               <View style={styles.actionRow}>
-                <TouchableOpacity style={styles.pauseBtn} onPress={() => setPaused((p) => !p)}>
+                <TouchableOpacity
+                  style={styles.pauseBtn}
+                  onPress={() => setPaused((p) => !p)}
+                  accessibilityRole="button"
+                  accessibilityLabel={paused ? 'ストレッチを再開' : 'ストレッチを一時停止'}
+                >
                   <Text style={styles.pauseText}>{paused ? '▶  再開' : '⏸  一時停止'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.skipBtnInline} onPress={advance}>
+                <TouchableOpacity
+                  style={styles.skipBtnInline}
+                  onPress={advance}
+                  accessibilityRole="button"
+                  accessibilityLabel="次のストレッチへスキップ"
+                >
                   <Text style={styles.skipText}>スキップ →</Text>
                 </TouchableOpacity>
               </View>

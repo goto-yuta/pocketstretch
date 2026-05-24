@@ -7,6 +7,9 @@ export function calcIntervalHours(config: SchedulerConfig): number {
   const [startH, startM] = config.activeHoursStart.split(':').map(Number);
   const [endH, endM] = config.activeHoursEnd.split(':').map(Number);
   const activeHours = (endH * 60 + endM - (startH * 60 + startM)) / 60;
+  if (activeHours <= 0) {
+    throw new RangeError(`active window must be positive, got start=${config.activeHoursStart} end=${config.activeHoursEnd}`);
+  }
   return activeHours / config.dailyCount;
 }
 
@@ -30,6 +33,15 @@ export function shouldShowGate(
   const interval = calcIntervalHours(config);
   const elapsed = (now.getTime() - new Date(lastStretchCompletedAt).getTime()) / (60 * 60 * 1000);
   return elapsed >= interval;
+}
+
+/** 動作時間帯が有効か（start < end かつ最低1時間）。Settings の調整で不正値を弾くのに使う。 */
+export function isValidActiveWindow(start: string, end: string): boolean {
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  const startMin = sh * 60 + sm;
+  const endMin = eh * 60 + em;
+  return endMin - startMin >= 60;
 }
 
 export function calcNextStretchTime(

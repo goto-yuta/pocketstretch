@@ -3,11 +3,12 @@ import { Alert, Linking, StyleSheet, Switch, Text, TouchableOpacity, View } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { cancelAllNotifications, requestPermissions, scheduleNextStretchNotification, scheduleNotifications } from '../notifications';
+import { cancelAllNotifications, ensureNotificationPermission, scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { Colors, Radius } from '../styles/tokens';
+import { DISCLAIMER_FULL } from '../data/disclaimer';
 import { RootStackParamList, SchedulerConfig } from '../types';
-import { calcNextStretchTime } from '../utils/scheduler';
+import { calcNextStretchTime, isValidActiveWindow } from '../utils/scheduler';
 
 const SCENE_LABEL: Record<string, string> = {
   office: 'オフィス向け', home: '自宅ライト', serious: '本格ケア',
@@ -34,8 +35,6 @@ function adjustHour(timeStr: string, delta: number): string {
 export default function SettingsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {
-    notificationEnabled, notificationTimes,
-    setNotificationEnabled, setNotificationTimes,
     bodyParts, scene,
     schedulerConfig, setSchedulerConfig,
     lastStretchCompletedAt,
@@ -54,50 +53,52 @@ export default function SettingsScreen() {
     return () => clearInterval(id);
   }, [lastStretchCompletedAt, schedulerConfig]);
 
-  async function toggleNotifications(value: boolean) {
-    if (value) {
-      setLoading(true);
-      const granted = await requestPermissions();
-      if (!granted) {
-        Alert.alert(
-          '通知が許可されていません',
-          '設定アプリから通知を許可してください',
-          [{ text: '設定を開く', onPress: () => Linking.openSettings() }, { text: 'キャンセル' }]
-        );
-        setLoading(false);
-        return;
-      }
-      const times = notificationTimes.length > 0 ? notificationTimes : ['09:00', '13:00', '18:00'];
-      await scheduleNotifications(times);
-      setNotificationEnabled(true);
-      setNotificationTimes(times);
-      setLoading(false);
-    } else {
-      await cancelAllNotifications();
-      setNotificationEnabled(false);
-    }
-  }
-
   async function updateSchedulerConfig(update: Partial<SchedulerConfig>) {
-    const newConfig = { ...schedulerConfig, ...update };
-    setSchedulerConfig(newConfig);
-    if (newConfig.enabled && lastStretchCompletedAt) {
-      await scheduleNextStretchNotification(lastStretchCompletedAt, newConfig).catch(() => {});
+    const candidate = { ...schedulerConfig, ...update };
+    if (candidate.enabled && !isValidActiveWindow(candidate.activeHoursStart, candidate.activeHoursEnd)) return;
+
+    if (update.enabled === true) {
+      setLoading(true);
+      try {
+        const outcome = await ensureNotificationPermission();
+        if (outcome === 'blocked') {
+          Alert.alert(
+            '通知が許可されていません',
+            '設定アプリから通知を許可してください',
+            [{ text: '設定を開く', onPress: () => Linking.openSettings() }, { text: 'あとで' }],
+          );
+          return;
+        }
+        if (outcome !== 'granted') return;
+      } finally {
+        setLoading(false);
+      }
     }
+
+    setSchedulerConfig(candidate);
+
+    if (!candidate.enabled) {
+      await cancelAllNotifications();
+      return;
+    }
+    const anchor = lastStretchCompletedAt ?? new Date().toISOString();
+    await scheduleNextStretchNotification(anchor, candidate).catch(() => {});
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>設定</Text>
 
-      <Text style={styles.sectionTitle}>スケジューラー</Text>
+      <Text style={styles.sectionTitle}>ストレッチ通知</Text>
       <View style={styles.row}>
-        <Text style={styles.label}>スケジューラー</Text>
+        <Text style={styles.label}>通知</Text>
         <Switch
           value={schedulerConfig.enabled}
           onValueChange={(v) => updateSchedulerConfig({ enabled: v })}
+          disabled={loading}
           trackColor={{ false: Colors.border, true: Colors.primaryLight }}
           thumbColor={schedulerConfig.enabled ? Colors.primary : Colors.bgCard}
+          accessibilityLabel="ストレッチ通知"
         />
       </View>
 
@@ -147,26 +148,13 @@ export default function SettingsScreen() {
         </>
       )}
 
-      <Text style={styles.sectionTitle}>通知</Text>
-      <View style={styles.row}>
-        <Text style={styles.label}>通知</Text>
-        <Switch
-          value={notificationEnabled}
-          onValueChange={toggleNotifications}
-          disabled={loading}
-          trackColor={{ false: Colors.border, true: Colors.primaryLight }}
-          thumbColor={notificationEnabled ? Colors.primary : Colors.bgCard}
-        />
-      </View>
-      {notificationEnabled && (
-        <Text style={styles.sub}>通知時刻: {notificationTimes.join('  ')}</Text>
-      )}
-
       <Text style={styles.sectionTitle}>プロフィール</Text>
       <View style={styles.editableSection}>
         <TouchableOpacity
           style={styles.editRow}
           onPress={() => navigation.navigate('EditScene')}
+          accessibilityRole="button"
+          accessibilityLabel="シーンを変更"
         >
           <Text style={styles.label}>シーン</Text>
           <View style={styles.editRowRight}>
@@ -177,6 +165,8 @@ export default function SettingsScreen() {
         <TouchableOpacity
           style={styles.editRowLast}
           onPress={() => navigation.navigate('EditBodyParts')}
+          accessibilityRole="button"
+          accessibilityLabel="気になる部位を変更"
         >
           <Text style={styles.label}>気になる部位</Text>
           <View style={styles.editRowRight}>
@@ -185,6 +175,7 @@ export default function SettingsScreen() {
           </View>
         </TouchableOpacity>
       </View>
+      <Text style={styles.disclaimer}>{DISCLAIMER_FULL}</Text>
     </SafeAreaView>
   );
 }
@@ -236,4 +227,5 @@ const styles = StyleSheet.create({
   editRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   editValue: { fontSize: 15, color: Colors.primary, fontWeight: '600' },
   chevron: { fontSize: 18, color: Colors.textMuted },
+  disclaimer: { fontSize: 11, color: Colors.textMuted, lineHeight: 17, marginTop: 28, marginBottom: 8 },
 });

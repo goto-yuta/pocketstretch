@@ -261,3 +261,11 @@ describe('getPrescription – new body parts', () => {
     expect(result.stretchIds).toContain('chest-open');
   });
 });
+
+describe('arm prescription includes wrist care', () => {
+  it('includes wrist stretches when arm is selected', () => {
+    const { stretchIds } = getPrescription(ALL_STRETCHES, ['arm'], 'home');
+    expect(stretchIds).toContain('wrist-extensor-stretch');
+    expect(stretchIds).toContain('wrist-flexor-stretch');
+  });
+});

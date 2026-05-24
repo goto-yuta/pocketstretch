@@ -18,7 +18,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'shoulder-roll',
     nameJa: '肩甲骨ほぐし',
-    descriptionJa: '肩甲骨の動的モビリゼーション。菱形筋の循環を促進しながら、前鋸筋・小胸筋の短縮を改善する。',
+    descriptionJa: '肩を大きく回して肩甲骨まわりを動かし、肩の重だるさをやわらげたい時に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -173,7 +173,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'neck-full',
     nameJa: '首の総合ストレッチ',
-    descriptionJa: '前後左右・回旋を含む首の総合ケア。血行促進と緊張緩和に。頸椎症・頸椎ヘルニアのある方は後屈を避け、痛みやしびれが出たら即中止。',
+    descriptionJa: '前後左右・回旋を含む首の総合ケア。首まわりの巡りと緊張がほぐれる感覚に。頸椎症・頸椎ヘルニアのある方は後屈を避け、痛みやしびれが出たら即中止してください。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 3,
@@ -186,7 +186,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'shoulder-full',
     nameJa: '肩の総合ストレッチ',
-    descriptionJa: '肩甲骨まわりを多角度からほぐす本格メニュー。四十肩予防にも。',
+    descriptionJa: '肩甲骨まわりを多角度からほぐす本格メニュー。肩の動かしにくさが気になる方に。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 3,
@@ -200,7 +200,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'eye-neck-roll',
     nameJa: '目のための首ゆっくり回し',
-    descriptionJa: '目の疲れをほぐすため、首をゆっくり360度回して血行を促進する。',
+    descriptionJa: '目の疲れが気になる時に、首をゆっくり360度回して巡りを感じる。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -274,11 +274,11 @@ export const ALL_STRETCHES: Stretch[] = [
     recommendedSets: 2,
     sport: ['yoga', 'dance', 'gymnastics'],
   },
-  // ── むくみ解消 (difficulty: 1) ───────────────────────
+  // ── むくみケア (difficulty: 1) ───────────────────────
   {
     id: 'ankle-rotation',
-    nameJa: '足首回し（むくみ解消）',
-    descriptionJa: '座ったまま足首をゆっくり大きく回し、脚のむくみを解消する。',
+    nameJa: '足首回し（むくみケア）',
+    descriptionJa: '座ったまま足首をゆっくり大きく回し、脚のむくみが気になる時のケアに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -317,7 +317,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'deep-breath-chest-open',
     nameJa: '深呼吸＋胸開き',
-    descriptionJa: '深呼吸しながら両腕を広げて胸を開き、リフレッシュと集中力アップを同時に促す。',
+    descriptionJa: '深呼吸しながら両腕を広げて胸を開く。リフレッシュしたい時・ひと息つきたい時に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -331,7 +331,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'chin-tuck',
     nameJa: '顎引きストレッチ（スマホ首ケア）',
-    descriptionJa: '顎を真後ろに水平に引き、頸部深層屈筋を活性化してストレートネック・スマホ首を改善する。',
+    descriptionJa: '顎を真後ろに水平に引き、頸部深層筋を働かせる。ストレートネック・スマホ首が気になる方に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -344,7 +344,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'levator-scapula-stretch',
     nameJa: '肩甲挙筋ストレッチ（首〜肩の深部ほぐし）',
-    descriptionJa: '僧帽筋上部と混同されやすい肩甲挙筋に直接アプローチし、首こり・肩こりの深部を解消する。',
+    descriptionJa: '肩甲挙筋にやさしくアプローチし、首こり・肩こりの深部をほぐしたい時に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -356,8 +356,8 @@ export const ALL_STRETCHES: Stretch[] = [
   },
   {
     id: 'pec-wall-stretch',
-    nameJa: '大胸筋壁ストレッチ（巻き肩解消）',
-    descriptionJa: '壁に前腕をつけて体を回転させ、大胸筋・小胸筋の短縮を解消。巻き肩・猫背の根本アプローチ。',
+    nameJa: '大胸筋壁ストレッチ（巻き肩ケア）',
+    descriptionJa: '壁に前腕をつけて体を回転させ、大胸筋・小胸筋をしっかり伸ばす。巻き肩・猫背が気になる方に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 2,
@@ -369,8 +369,8 @@ export const ALL_STRETCHES: Stretch[] = [
   },
   {
     id: 'thoracic-open-book',
-    nameJa: '胸椎オープンブック（猫背の根本改善）',
-    descriptionJa: '横向きに寝て上側の腕を後方に開き、胸椎（T4〜T8）の回旋可動性を回復。肩こり・猫背・腰痛すべての根本にアプローチ。',
+    nameJa: '胸椎オープンブック（姿勢ケア）',
+    descriptionJa: '横向きに寝て上側の腕を後方に開き、胸椎（T4〜T8）の回旋可動性を引き出す。肩こり・猫背・腰まわりが気になる方にアプローチ。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -395,7 +395,7 @@ export const ALL_STRETCHES: Stretch[] = [
   },
   {
     id: 'iliopsoas-stretch',
-    nameJa: '腸腰筋ストレッチ（反り腰・腰痛予防）',
+    nameJa: '腸腰筋ストレッチ（反り腰ケア）',
     descriptionJa: '片膝立ちで骨盤を安定させながら股関節前面を伸ばし、座り仕事で短縮した腸腰筋（大腰筋＋腸骨筋）をケアする。',
     image: placeholder,
     durationSeconds: 40,
@@ -409,7 +409,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'piriformis-stretch',
     nameJa: '梨状筋ストレッチ（坐骨神経ケア）',
-    descriptionJa: '仰向けでフィギュア4のポーズを取り、梨状筋を解放して坐骨神経痛を予防する。長時間座位のデスクワーカーに特効。',
+    descriptionJa: '仰向けでフィギュア4のポーズを取り、梨状筋をゆるめる。坐骨神経痛が気になる長時間座位の方におすすめ。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -421,8 +421,8 @@ export const ALL_STRETCHES: Stretch[] = [
   },
   {
     id: 'pelvic-tilt',
-    nameJa: '骨盤傾斜（腰痛予防の基礎）',
-    descriptionJa: '仰向けで骨盤の前後傾を繰り返し、多裂筋・腹横筋を活性化して腰椎を安定させる。理学療法士が腰痛プログラムで必ず使う入門種目。',
+    nameJa: '骨盤傾斜（腰まわりケアの基礎）',
+    descriptionJa: '仰向けで骨盤の前後傾を繰り返し、多裂筋・腹横筋を働かせて腰椎を安定させる。デスクワーカー向けの入門種目。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -435,7 +435,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'quadratus-lumborum-stretch',
     nameJa: '腰方形筋ストレッチ（腰の横のほぐし）',
-    descriptionJa: '椅子に座ったまま体側を伸ばし、腰痛・骨盤傾斜の主要因となる腰方形筋の緊張を緩和する。',
+    descriptionJa: '椅子に座ったまま体側を伸ばし、腰の張りに関わる腰方形筋の緊張をゆるめる。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -461,7 +461,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'it-band-stretch',
     nameJa: '腸脛靭帯（ITバンド）ストレッチ',
-    descriptionJa: '足をクロスして体側を傾け、ランナー膝・膝外側痛の原因となる腸脛靭帯の緊張を解放する。',
+    descriptionJa: '足をクロスして体側を傾け、ランニングで張りやすい腸脛靭帯（膝の外側）の緊張をゆるめる。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -487,7 +487,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'diaphragm-breathing',
     nameJa: '横隔膜呼吸（自律神経調整）',
-    descriptionJa: '腹部だけを使った横隔膜呼吸で副交感神経を優位にし、ストレス解消・集中力回復・就寝前のリラックスに効果的。',
+    descriptionJa: '腹部だけを使った横隔膜呼吸でゆっくり呼吸を整える。ひと息つきたい時・就寝前のリラックスに。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 1,
@@ -501,11 +501,11 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'wrist-flexor-stretch',
     nameJa: '手首屈筋ストレッチ（ゴルフ肘ケア）',
-    descriptionJa: '前腕屈筋群（橈側手根屈筋・尺側手根屈筋）と内側上顆の緊張を解放する。ゴルフ・野球・クライミングなど手首を多用するスポーツの必須ケア。',
+    descriptionJa: '前腕屈筋群（橈側手根屈筋・尺側手根屈筋）と内側上顆の緊張をゆるめる。ゴルフ・野球・クライミングなど手首を多用するスポーツのケアにおすすめ。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
-    bodyParts: ['shoulder'],
+    bodyParts: ['arm'],
     scenes: ['office', 'home', 'serious'],
     steps: ['腕を前に伸ばし、手のひらを上に向ける', '反対の手で指先をつかみ、手前（体側）に引く', '肘は完全に伸ばしたまま', '前腕内側（肘から手首）の伸びを感じながら20秒キープ', '反対側も同様に'],
     recommendedSets: 2,
@@ -514,11 +514,11 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'wrist-extensor-stretch',
     nameJa: '手首伸筋ストレッチ（テニス肘ケア）',
-    descriptionJa: '前腕伸筋群（橈側手根伸筋・指伸筋）と外側上顆の緊張を解放する。テニス・バドミントンのバックハンドや卓球のラケット操作後に特効。',
+    descriptionJa: '前腕伸筋群（橈側手根伸筋・指伸筋）と外側上顆の緊張をゆるめる。テニス・バドミントンのバックハンドや卓球のラケット操作後におすすめ。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
-    bodyParts: ['shoulder'],
+    bodyParts: ['arm'],
     scenes: ['office', 'home', 'serious'],
     steps: ['腕を前に伸ばし、手のひらを下に向ける', '反対の手で手の甲を下（床）方向に押し下げる', '肘は完全に伸ばしたまま', '前腕外側（肘から手首）の伸びを感じながら20秒キープ', '反対側も同様に'],
     recommendedSets: 2,
@@ -527,7 +527,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'sleeper-stretch',
     nameJa: 'スリーパーストレッチ（肩後方関節包）',
-    descriptionJa: '棘下筋・小円筋・後方関節包を伸ばし、オーバーヘッドスポーツで起きやすい内旋制限（GIRD）を改善する。投球・スパイク動作の怪我予防に最重要。',
+    descriptionJa: '棘下筋・小円筋・後方関節包を伸ばす。オーバーヘッドスポーツで内旋がかたくなりやすい方に。投球・スパイク動作前後のケアに。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -553,7 +553,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'ankle-dorsiflexion-stretch',
     nameJa: '足関節背屈ストレッチ（ニートゥウォール）',
-    descriptionJa: '下腿三頭筋遠位と足関節の背屈可動域を改善する。スクワット深度向上・ジャンプ着地の衝撃吸収改善に直結するリハビリ由来の種目。',
+    descriptionJa: '下腿三頭筋遠位と足関節の背屈可動域を広げたい時に。スクワットやジャンプ着地の動きづくりに使われる種目。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -579,7 +579,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'tibialis-anterior-stretch',
     nameJa: '前脛骨筋ストレッチ（スネ前面）',
-    descriptionJa: '前脛骨筋・長母趾伸筋（スネ前面）の緊張を解放する。スキー・スノーボードのブーツ姿勢で特に疲労しやすい部位。',
+    descriptionJa: '前脛骨筋・長母趾伸筋（スネ前面）の緊張をゆるめる。スキー・スノーボードのブーツ姿勢で特に疲労しやすい部位。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -592,20 +592,20 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'plantar-fascia-stretch',
     nameJa: '足底筋膜ストレッチ',
-    descriptionJa: '足底筋膜・足趾屈筋群を伸ばし、足底筋膜炎を予防する。長時間歩行・登山・ダンスの後に必須のケア。',
+    descriptionJa: '足底筋膜・足趾屈筋群を伸ばす。足裏の張りが気になる長時間歩行・登山・ダンスの後のケアに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
     bodyParts: ['leg'],
     scenes: ['home', 'serious'],
-    steps: ['椅子に座り、右足を左のもも（膝付近）の上に乗せる', '右手で足趾（特に親指）をつかみ、足の甲方向（背屈）に反らせる', '足の裏（かかとから指の付け根）の張りを感じながら20秒キープ', '朝の最初の一歩前に行うと特に効果的', '反対側も同様に'],
+    steps: ['椅子に座り、右足を左のもも（膝付近）の上に乗せる', '右手で足趾（特に親指）をつかみ、足の甲方向（背屈）に反らせる', '足の裏（かかとから指の付け根）の張りを感じながら20秒キープ', '朝の最初の一歩前のケアにおすすめ', '反対側も同様に'],
     recommendedSets: 2,
     sport: ['hiking', 'dance', 'running', 'gymnastics'],
   },
   {
     id: 'patellar-tendon-quad-stretch',
-    nameJa: '膝蓋腱・大腿四頭筋ストレッチ（ジャンパー膝予防）',
-    descriptionJa: '大腿四頭筋遠位部と膝蓋腱を重点的に伸ばす。バスケ・バレーのジャンプ着地で起きやすいジャンパー膝の予防に特化した種目。',
+    nameJa: '膝蓋腱・大腿四頭筋ストレッチ（ジャンパー膝ケア）',
+    descriptionJa: '大腿四頭筋遠位部と膝蓋腱を重点的に伸ばす。バスケ・バレーでジャンプ着地が多い方のケアに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 2,
@@ -618,11 +618,11 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'finger-flexor-stretch',
     nameJa: '指屈筋ストレッチ（クライミング向け）',
-    descriptionJa: '浅指屈筋・深指屈筋とA2プーリー周辺の緊張を解放する。ボルダリング・クライミングで最多発する指プーリー損傷の予防に。',
+    descriptionJa: '浅指屈筋・深指屈筋とA2プーリー周辺の緊張をゆるめる。ボルダリング・クライミングで指を酷使する方のケアに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
-    bodyParts: ['shoulder'],
+    bodyParts: ['arm'],
     scenes: ['home', 'serious'],
     steps: ['反対の手で親指から小指まで一指ずつ背屈方向に伸ばす', '各指10秒、急に力を入れず徐々に圧をかける', '指の付け根（A2プーリー付近）に痛みがあれば即中止', '両手10本指行う', 'ウォームアップ前には軽めに、クライミング後はしっかり行う'],
     recommendedSets: 1,
@@ -631,7 +631,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'cobra-sphinx-stretch',
     nameJa: 'コブラ／スフィンクスポーズ（胸椎伸展）',
-    descriptionJa: '腹直筋の伸展と胸椎後彎の解消を同時に行う。サーフィンのテイクオフ姿勢・水泳のバタフライ種目・体操のバックベンド準備に。',
+    descriptionJa: '腹直筋を伸ばし、胸椎を心地よく反らす。サーフィンのテイクオフ姿勢・水泳のバタフライ・体操のバックベンド準備に。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -644,7 +644,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'neck-isometric-activation',
     nameJa: '頸部等尺アクティベーション（コンタクト競技向け）',
-    descriptionJa: '頸部の屈筋・伸筋・側屈筋を等尺収縮で活性化する。ラグビーのスクラムや格闘技の接触前の首を安定させ、頸椎捻挫を予防するリハビリ由来の種目。',
+    descriptionJa: '頸部の屈筋・伸筋・側屈筋を等尺収縮で働かせる。ラグビーのスクラムや格闘技の接触前に首を安定させたい時のケアに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -683,7 +683,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'standing-wall-hamstring',
     nameJa: '壁ハイキック・ハムストリングスストレッチ',
-    descriptionJa: '立位で足を壁に沿って高く上げ、ハムストリングスと坐骨神経モビリティを改善する。格闘技のハイキックやダンスのレッグスイングに必要な可動域を獲得する。',
+    descriptionJa: '立位で足を壁に沿って高く上げ、ハムストリングスと脚の可動域を広げたい時に。格闘技のハイキックやダンスのレッグスイングの動きづくりに。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 2,
@@ -755,7 +755,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'doorway-chest-stretch',
     nameJa: 'ドアフレーム大胸筋ストレッチ',
-    descriptionJa: 'ドアフレームに両手をついて体を前に倒し、大胸筋・小胸筋を深くストレッチする。デスクワーク由来の巻き肩を根本から解消する。',
+    descriptionJa: 'ドアフレームに両手をついて体を前に倒し、大胸筋・小胸筋を深く伸ばす。デスクワークでの巻き肩が気になる方に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 2,
@@ -794,7 +794,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'dead-bug-stretch',
     nameJa: 'デッドバッグ（体幹の安定化）',
-    descriptionJa: '仰向けで対角線上の腕と脚を同時に伸ばし、体幹の安定筋（腹横筋・多裂筋）を活性化する。腰痛予防と姿勢改善の基礎種目。',
+    descriptionJa: '仰向けで対角線上の腕と脚を同時に伸ばし、体幹の安定筋（腹横筋・多裂筋）を働かせる。腰まわりの安定と姿勢づくりの基礎種目。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 2,
@@ -852,7 +852,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'neck-rotation-stretch',
     nameJa: '首の水平回旋ストレッチ',
-    descriptionJa: '頸椎の回旋可動域を左右均等に確保する。胸鎖乳突筋・頭板状筋の非対称な緊張を解消し、長時間のモニター作業による首の偏りをリセットする。',
+    descriptionJa: '頸椎の回旋可動域を左右均等に整える。胸鎖乳突筋・頭板状筋の左右差をゆるめ、長時間のモニター作業による首の偏りをリセット。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -889,7 +889,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'standing-hip-flexor-reset',
     nameJa: '立ち上がり股関節リセット',
-    descriptionJa: '座り続けで短縮した腸腰筋を、立ち上がりの動作を利用して素早くリセットする。1〜2分あればできる、デスクワーカー向けの即効ケア。',
+    descriptionJa: '座り続けで縮こまった腸腰筋を、立ち上がりの動作でさっとリセット。1〜2分でできる、デスクワーカー向けの手軽なケア。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -907,7 +907,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'finger-extensor-stretch',
     nameJa: '指の伸展・開きストレッチ',
-    descriptionJa: '指屈筋群と手掌腱膜の緊張を解放し、長時間のタイピングやスマホ操作で蓄積した手の疲れを解消する。腱鞘炎予防にも効果的。',
+    descriptionJa: '指屈筋群と手掌腱膜の緊張をゆるめ、長時間のタイピングやスマホ操作でたまった手の疲れをほぐしたい時に。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -927,7 +927,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'morning-joint-mobility',
     nameJa: '朝の関節モビリゼーション',
-    descriptionJa: '起床直後に全身の主要関節を順番に動かし、関節液を循環させて一日のスタートを整える。痛みや硬さが取れる前のやさしい準備体操。',
+    descriptionJa: '起床直後に全身の主要関節を順番に動かし、一日のスタートを整えるやさしい準備体操。朝のこわばりが気になる時に。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 1,
@@ -963,7 +963,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'morning-spine-mobilization',
     nameJa: '朝の脊椎モビリゼーション',
-    descriptionJa: '仰向けで脊椎の回旋と屈伸を行い、就寝中に硬直した背骨を目覚めさせる。腰痛予防と姿勢リセットを朝一番に行える簡単シーケンス。',
+    descriptionJa: '仰向けで脊椎の回旋と屈伸を行い、就寝中にこわばった背骨を目覚めさせる。腰まわりと姿勢のリセットを朝一番に行える簡単シーケンス。',
     image: placeholder,
     durationSeconds: 40,
     difficulty: 1,
@@ -981,8 +981,8 @@ export const ALL_STRETCHES: Stretch[] = [
   // ── 就寝前 (bedtime) ──────────────────────────────────────
   {
     id: 'bedtime-legs-up-wall',
-    nameJa: '脚上げ壁ストレッチ（夜のむくみ解消）',
-    descriptionJa: '壁に脚を立てかけて仰向けになる逆転ポーズ。重力を利用して下肢の静脈還流を促進し、一日の歩行・立ち仕事によるむくみと疲労を解消する。',
+    nameJa: '脚上げ壁ストレッチ（夜のむくみケア）',
+    descriptionJa: '壁に脚を立てかけて仰向けになる逆転ポーズ。一日の歩行・立ち仕事による脚のむくみや疲れが気になる時のケアに。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 1,
@@ -1000,7 +1000,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'bedtime-yin-hip',
     nameJa: '就寝前陰ヨガ股関節オープナー',
-    descriptionJa: '長時間のホールドで股関節の深層筋（外旋筋群・内転筋群）と結合組織を緩める。就寝前の副交感神経を優位にし、入眠をスムーズにする。',
+    descriptionJa: '長時間のホールドで股関節の深層筋（外旋筋群・内転筋群）と結合組織をゆるめる。就寝前にゆったり過ごしたい時に。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 1,
@@ -1019,7 +1019,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'bedtime-progressive-relaxation',
     nameJa: '就寝前全身弛緩ストレッチ',
-    descriptionJa: '頭から足先まで順番に各部位を意識して弛緩させる。筋緊張を段階的に解放することで深いリラックスと入眠の質向上を促す。',
+    descriptionJa: '頭から足先まで順番に各部位を意識してゆるめる。段階的に力を抜いて、深いリラックスと就寝前のひと息に。',
     image: placeholder,
     durationSeconds: 45,
     difficulty: 1,

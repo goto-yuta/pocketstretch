@@ -1,10 +1,10 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Colors } from '../styles/tokens';
 import { useUserStore } from '../store/useUserStore';
-import { MainTabParamList, OnboardingStackParamList, RootStackParamList } from '../types';
+import { MainTabParamList, OnboardingStackParamList, RootStackParamList, SchedulerConfig } from '../types';
 import { shouldShowGate } from '../utils/scheduler';
 import Step1BodyParts from '../screens/onboarding/Step1BodyParts';
 import Step2Scene from '../screens/onboarding/Step2Scene';
@@ -21,6 +21,31 @@ import EditBodyParts from '../screens/EditBodyParts';
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
+
+export const navigationRef = createNavigationContainerRef<RootStackParamList>();
+
+/** オンボ済み・スケジューラ有効・Gate 期限到来なら true（純粋判定）。 */
+export function shouldNavigateToGateFromState(
+  onboardingCompleted: boolean,
+  lastStretchCompletedAt: string | null,
+  schedulerConfig: SchedulerConfig,
+  now: Date = new Date(),
+): boolean {
+  if (!onboardingCompleted) return false;
+  return shouldShowGate(lastStretchCompletedAt, schedulerConfig, now);
+}
+
+// Also serves cold-start-from-notification: getLastNotificationResponseAsync usually resolves
+// before the nav container is ready (so its navigate no-ops), and this onReady path shows the
+// Gate instead — relying on shouldShowGate being true, which holds when a reminder just fired.
+/** 期限到来なら Gate へ遷移（cold/AppState 復帰時に呼ぶ）。 */
+export function goToGateIfDue(): void {
+  if (!navigationRef.isReady()) return;
+  const { onboardingCompleted, lastStretchCompletedAt, schedulerConfig } = useUserStore.getState();
+  if (shouldNavigateToGateFromState(onboardingCompleted, lastStretchCompletedAt, schedulerConfig)) {
+    navigationRef.navigate('Gate');
+  }
+}
 
 function OnboardingNavigator() {
   return (
@@ -44,41 +69,28 @@ function MainTabs() {
 
 export default function RootNavigator() {
   const onboardingCompleted = useUserStore((s) => s.onboardingCompleted);
-  const lastStretchCompletedAt = useUserStore((s) => s.lastStretchCompletedAt);
-  const schedulerConfig = useUserStore((s) => s.schedulerConfig);
-  const gateNeeded = shouldShowGate(lastStretchCompletedAt, schedulerConfig);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef} onReady={goToGateIfDue}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         {!onboardingCompleted ? (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />
         ) : (
           <>
-            {gateNeeded && (
-              <RootStack.Screen
-                name="Gate"
-                component={GateScreen}
-                options={{ gestureEnabled: false }}
-              />
-            )}
             <RootStack.Screen name="Main" component={MainTabs} />
+            <RootStack.Screen
+              name="Gate"
+              component={GateScreen}
+              options={{ gestureEnabled: false }}
+            />
             <RootStack.Screen
               name="Session"
               component={SessionScreen}
               options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
             />
             <RootStack.Screen name="Completion" component={CompletionScreen} />
-            <RootStack.Screen
-              name="EditScene"
-              component={EditScene}
-              options={{ presentation: 'modal' }}
-            />
-            <RootStack.Screen
-              name="EditBodyParts"
-              component={EditBodyParts}
-              options={{ presentation: 'modal' }}
-            />
+            <RootStack.Screen name="EditScene" component={EditScene} options={{ presentation: 'modal' }} />
+            <RootStack.Screen name="EditBodyParts" component={EditBodyParts} options={{ presentation: 'modal' }} />
           </>
         )}
       </RootStack.Navigator>

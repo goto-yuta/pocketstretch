@@ -8,6 +8,8 @@ import { scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 import { getPrescription } from '../utils/prescription';
+import { getLocalDateString } from '../utils/date';
+import { shouldShowGate } from '../utils/scheduler';
 import { Colors, Radius, Shadow } from '../styles/tokens';
 import PrimaryButton from '../components/PrimaryButton';
 
@@ -18,13 +20,19 @@ export default function GateScreen() {
   const { bodyParts, scene, sport, schedulerConfig, lastStretchCompletedAt, dailySkipUsed, lastSkipDate, recordSkip } = useUserStore();
   const [skipVisible, setSkipVisible] = useState(false);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getLocalDateString();
   const effectiveSkipUsed = dailySkipUsed && lastSkipDate === today;
 
   useEffect(() => {
     const timer = setTimeout(() => setSkipVisible(true), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!shouldShowGate(lastStretchCompletedAt, schedulerConfig)) {
+      navigation.navigate('Main');
+    }
+  }, [lastStretchCompletedAt, schedulerConfig, navigation]);
 
   const stretchIds = useMemo(
     () => getPrescription(ALL_STRETCHES, bodyParts, scene, sport || undefined).stretchIds.slice(0, 3),
@@ -64,7 +72,11 @@ export default function GateScreen() {
         style={styles.startBtn}
       />
       {skipVisible && !effectiveSkipUsed && (
-        <TouchableOpacity onPress={handleSkip}>
+        <TouchableOpacity
+          onPress={handleSkip}
+          accessibilityRole="button"
+          accessibilityLabel="スキップ"
+        >
           <Text style={styles.skipText}>スキップ（本日あと 1 回）</Text>
         </TouchableOpacity>
       )}

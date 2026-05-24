@@ -7,6 +7,7 @@ import PrimaryButton from '../../components/PrimaryButton';
 import { useUserStore } from '../../store/useUserStore';
 import { BodyPart, OnboardingStackParamList } from '../../types';
 import { Colors, Radius } from '../../styles/tokens';
+import { DISCLAIMER_SHORT } from '../../data/disclaimer';
 
 const BODY_PARTS: { id: BodyPart; label: string }[] = [
   { id: 'neck',    label: '首' },
@@ -42,6 +43,7 @@ export default function Step1BodyParts({ navigation }: Props) {
       <OnboardingProgressBar current={1} total={4} />
       <Text style={styles.title}>気になる部位を選んでください</Text>
       <Text style={styles.subtitle}>複数選択できます</Text>
+      <Text style={styles.disclaimer}>{DISCLAIMER_SHORT}</Text>
       <View style={styles.grid}>
         {BODY_PARTS.map(({ id, label }) => (
           <Pressable
@@ -69,4 +71,5 @@ const styles = StyleSheet.create({
   chipSelected: { borderColor: Colors.primary, backgroundColor: Colors.primaryLight },
   chipText: { fontSize: 16, color: Colors.textSecondary },
   chipTextSelected: { color: Colors.primaryDeep, fontWeight: 'bold' },
+  disclaimer: { fontSize: 11, color: Colors.textMuted, textAlign: 'center', marginBottom: 16, lineHeight: 16 },
 });

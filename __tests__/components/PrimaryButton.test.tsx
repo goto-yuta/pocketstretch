@@ -13,3 +13,10 @@ test('disabled のとき onPress が呼ばれない', () => {
   fireEvent.press(getByText('テスト'));
   expect(onPress).not.toHaveBeenCalled();
 });
+
+it('exposes an accessible button with its label', () => {
+  const { getByLabelText } = render(<PrimaryButton label="今すぐストレッチする" onPress={() => {}} />);
+  const node = getByLabelText('今すぐストレッチする');
+  expect(node).toBeTruthy();
+  expect(node.props.accessibilityRole).toBe('button');
+});
