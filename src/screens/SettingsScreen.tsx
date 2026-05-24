@@ -98,6 +98,7 @@ export default function SettingsScreen() {
           disabled={loading}
           trackColor={{ false: Colors.border, true: Colors.primaryLight }}
           thumbColor={schedulerConfig.enabled ? Colors.primary : Colors.bgCard}
+          accessibilityLabel="ストレッチ通知"
         />
       </View>
 
@@ -152,6 +153,8 @@ export default function SettingsScreen() {
         <TouchableOpacity
           style={styles.editRow}
           onPress={() => navigation.navigate('EditScene')}
+          accessibilityRole="button"
+          accessibilityLabel="シーンを変更"
         >
           <Text style={styles.label}>シーン</Text>
           <View style={styles.editRowRight}>
@@ -162,6 +165,8 @@ export default function SettingsScreen() {
         <TouchableOpacity
           style={styles.editRowLast}
           onPress={() => navigation.navigate('EditBodyParts')}
+          accessibilityRole="button"
+          accessibilityLabel="気になる部位を変更"
         >
           <Text style={styles.label}>気になる部位</Text>
           <View style={styles.editRowRight}>

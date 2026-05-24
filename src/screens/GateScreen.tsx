@@ -72,7 +72,11 @@ export default function GateScreen() {
         style={styles.startBtn}
       />
       {skipVisible && !effectiveSkipUsed && (
-        <TouchableOpacity onPress={handleSkip}>
+        <TouchableOpacity
+          onPress={handleSkip}
+          accessibilityRole="button"
+          accessibilityLabel="スキップ"
+        >
           <Text style={styles.skipText}>スキップ（本日あと 1 回）</Text>
         </TouchableOpacity>
       )}

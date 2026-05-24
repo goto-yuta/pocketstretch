@@ -12,7 +12,15 @@ interface Props {
 
 export default function PrimaryButton({ label, onPress, disabled = false, style }: Props) {
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled} activeOpacity={0.85} style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.85}
+      style={style}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled }}
+    >
       <LinearGradient
         colors={disabled ? [Colors.border, Colors.border] : [Colors.primary, Colors.primaryDeep]}
         start={{ x: 0, y: 0 }}

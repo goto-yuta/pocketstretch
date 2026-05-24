@@ -82,7 +82,11 @@ export default function SessionScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.progress}>{index + 1} / {stretches.length}</Text>
-        <TouchableOpacity onPress={handleEnd}>
+        <TouchableOpacity
+          onPress={handleEnd}
+          accessibilityRole="button"
+          accessibilityLabel="セッションを終了"
+        >
           <Text style={styles.endBtn}>終了</Text>
         </TouchableOpacity>
       </View>
@@ -107,10 +111,20 @@ export default function SessionScreen() {
             />
             {readyCount === null && (
               <View style={styles.actionRow}>
-                <TouchableOpacity style={styles.pauseBtn} onPress={() => setPaused((p) => !p)}>
+                <TouchableOpacity
+                  style={styles.pauseBtn}
+                  onPress={() => setPaused((p) => !p)}
+                  accessibilityRole="button"
+                  accessibilityLabel={paused ? 'ストレッチを再開' : 'ストレッチを一時停止'}
+                >
                   <Text style={styles.pauseText}>{paused ? '▶  再開' : '⏸  一時停止'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.skipBtnInline} onPress={advance}>
+                <TouchableOpacity
+                  style={styles.skipBtnInline}
+                  onPress={advance}
+                  accessibilityRole="button"
+                  accessibilityLabel="次のストレッチへスキップ"
+                >
                   <Text style={styles.skipText}>スキップ →</Text>
                 </TouchableOpacity>
               </View>
