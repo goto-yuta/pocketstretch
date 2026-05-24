@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { cancelAllNotifications, requestPermissions, scheduleNextStretchNotification, scheduleNotifications } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { Colors, Radius } from '../styles/tokens';
+import { DISCLAIMER_FULL } from '../data/disclaimer';
 import { RootStackParamList, SchedulerConfig } from '../types';
 import { calcNextStretchTime } from '../utils/scheduler';
 
@@ -185,6 +186,7 @@ export default function SettingsScreen() {
           </View>
         </TouchableOpacity>
       </View>
+      <Text style={styles.disclaimer}>{DISCLAIMER_FULL}</Text>
     </SafeAreaView>
   );
 }
@@ -236,4 +238,5 @@ const styles = StyleSheet.create({
   editRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   editValue: { fontSize: 15, color: Colors.primary, fontWeight: '600' },
   chevron: { fontSize: 18, color: Colors.textMuted },
+  disclaimer: { fontSize: 11, color: Colors.textMuted, lineHeight: 17, marginTop: 28, marginBottom: 8 },
 });
