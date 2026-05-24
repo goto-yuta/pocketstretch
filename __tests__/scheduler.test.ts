@@ -3,6 +3,7 @@ import {
   isWithinActiveHours,
   shouldShowGate,
   calcNextStretchTime,
+  isValidActiveWindow,
 } from '../src/utils/scheduler';
 import { SchedulerConfig } from '../src/types';
 
@@ -63,6 +64,33 @@ describe('shouldShowGate', () => {
   it('returns false when enabled is false', () => {
     const disabled = { ...defaultConfig, enabled: false };
     expect(shouldShowGate(null, disabled, now)).toBe(false);
+  });
+});
+
+describe('calcIntervalHours guards', () => {
+  it('throws when active window is non-positive (start >= end)', () => {
+    expect(() =>
+      calcIntervalHours({ enabled: true, dailyCount: 3, activeHoursStart: '22:00', activeHoursEnd: '08:00' }),
+    ).toThrow(RangeError);
+  });
+  it('throws when active window is zero (start === end)', () => {
+    expect(() =>
+      calcIntervalHours({ enabled: true, dailyCount: 3, activeHoursStart: '12:00', activeHoursEnd: '12:00' }),
+    ).toThrow(RangeError);
+  });
+});
+
+describe('isValidActiveWindow', () => {
+  it('accepts a normal window', () => {
+    expect(isValidActiveWindow('08:00', '22:00')).toBe(true);
+  });
+  it('rejects start >= end', () => {
+    expect(isValidActiveWindow('22:00', '22:00')).toBe(false);
+    expect(isValidActiveWindow('22:00', '08:00')).toBe(false);
+  });
+  it('requires at least a 1-hour window', () => {
+    expect(isValidActiveWindow('08:00', '08:30')).toBe(false);
+    expect(isValidActiveWindow('08:00', '09:00')).toBe(true);
   });
 });
 
