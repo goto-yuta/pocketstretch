@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as StoreReview from 'expo-store-review';
 import { scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
@@ -10,6 +11,7 @@ import { ALL_STRETCHES } from '../data/stretches';
 import { Colors, Radius, Shadow } from '../styles/tokens';
 import PrimaryButton from '../components/PrimaryButton';
 import { streakMessage } from '../utils/streak';
+import { shouldRequestReview } from '../utils/review';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, 'Completion'>;
@@ -17,7 +19,7 @@ type Route = RouteProp<RootStackParamList, 'Completion'>;
 export default function CompletionScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { schedulerConfig, currentStreak, totalSessions } = useUserStore();
+  const { schedulerConfig, currentStreak, totalSessions, lastReviewRequestAt, recordReviewRequest } = useUserStore();
 
   const ids = route.params.completedStretchIds;
 
@@ -31,6 +33,15 @@ export default function CompletionScreen() {
 
   useEffect(() => {
     scheduleNextStretchNotification(new Date().toISOString(), schedulerConfig).catch(() => {});
+    if (shouldRequestReview(totalSessions, lastReviewRequestAt)) {
+      (async () => {
+        if (await StoreReview.isAvailableAsync()) {
+          await StoreReview.requestReview();
+          recordReviewRequest();
+        }
+      })().catch(() => {});
+    }
+    // Run once on mount; totalSessions/lastReviewRequestAt are intentionally captured at mount time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

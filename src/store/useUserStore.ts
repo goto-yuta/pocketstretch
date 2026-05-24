@@ -26,6 +26,7 @@ interface UserStore extends UserProfile {
   longestStreak: number;
   totalSessions: number;
   lastCompletedDate: string | null;
+  lastReviewRequestAt: string | null;
   setBodyParts: (parts: BodyPart[]) => void;
   setScene: (scene: Scene) => void;
   setSport: (sport: string) => void;
@@ -34,6 +35,7 @@ interface UserStore extends UserProfile {
   markStretchesCompleted: (ids: string[]) => void;
   recordStretchCompletion: () => void;
   recordSkip: () => void;
+  recordReviewRequest: () => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -52,6 +54,7 @@ export const useUserStore = create<UserStore>()(
       longestStreak: 0,
       totalSessions: 0,
       lastCompletedDate: null,
+      lastReviewRequestAt: null,
       setBodyParts: (bodyParts) => set({ bodyParts }),
       setScene: (scene) => set({ scene }),
       setSport: (sport) => set({ sport }),
@@ -85,21 +88,19 @@ export const useUserStore = create<UserStore>()(
             lastStretchCompletedAt: new Date().toISOString(),
           };
         }),
+      recordReviewRequest: () => set({ lastReviewRequestAt: new Date().toISOString() }),
     }),
     {
       name: 'user-profile',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 1,
+      version: 2,
       migrate: (persisted: any, fromVersion: number) => {
         let state = persisted;
         if (fromVersion < 1) {
-          state = {
-            ...state,
-            currentStreak: 0,
-            longestStreak: 0,
-            totalSessions: 0,
-            lastCompletedDate: null,
-          };
+          state = { ...state, currentStreak: 0, longestStreak: 0, totalSessions: 0, lastCompletedDate: null };
+        }
+        if (fromVersion < 2) {
+          state = { ...state, lastReviewRequestAt: null };
         }
         return state;
       },

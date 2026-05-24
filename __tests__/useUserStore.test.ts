@@ -23,6 +23,7 @@ describe('useUserStore', () => {
       longestStreak: 0,
       totalSessions: 0,
       lastCompletedDate: null,
+      lastReviewRequestAt: null,
     });
   });
 
@@ -144,6 +145,20 @@ describe('recordSkip', () => {
     act(() => result.current.recordSkip());
     const ts = new Date(result.current.lastStretchCompletedAt!).getTime();
     expect(ts).toBeGreaterThanOrEqual(before);
+  });
+});
+
+describe('recordReviewRequest', () => {
+  beforeEach(() => {
+    useUserStore.setState({ lastReviewRequestAt: null });
+  });
+
+  it('stamps lastReviewRequestAt with an ISO time', () => {
+    const { result } = renderHook(() => useUserStore());
+    expect(result.current.lastReviewRequestAt).toBeNull();
+    act(() => result.current.recordReviewRequest());
+    expect(typeof result.current.lastReviewRequestAt).toBe('string');
+    expect(Number.isNaN(Date.parse(result.current.lastReviewRequestAt!))).toBe(false);
   });
 });
 
