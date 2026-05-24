@@ -42,6 +42,7 @@
   "private": true,
   "jest": {
     "preset": "jest-expo",
+    "clearMocks": true,
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect"
     ],
