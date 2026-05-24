@@ -274,7 +274,7 @@ export const ALL_STRETCHES: Stretch[] = [
     recommendedSets: 2,
     sport: ['yoga', 'dance', 'gymnastics'],
   },
-  // ── むくみ解消 (difficulty: 1) ───────────────────────
+  // ── むくみケア (difficulty: 1) ───────────────────────
   {
     id: 'ankle-rotation',
     nameJa: '足首回し（むくみケア）',
@@ -501,7 +501,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'wrist-flexor-stretch',
     nameJa: '手首屈筋ストレッチ（ゴルフ肘ケア）',
-    descriptionJa: '前腕屈筋群（橈側手根屈筋・尺側手根屈筋）と内側上顆の緊張を解放する。ゴルフ・野球・クライミングなど手首を多用するスポーツの必須ケア。',
+    descriptionJa: '前腕屈筋群（橈側手根屈筋・尺側手根屈筋）と内側上顆の緊張をゆるめる。ゴルフ・野球・クライミングなど手首を多用するスポーツのケアにおすすめ。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -579,7 +579,7 @@ export const ALL_STRETCHES: Stretch[] = [
   {
     id: 'tibialis-anterior-stretch',
     nameJa: '前脛骨筋ストレッチ（スネ前面）',
-    descriptionJa: '前脛骨筋・長母趾伸筋（スネ前面）の緊張を解放する。スキー・スノーボードのブーツ姿勢で特に疲労しやすい部位。',
+    descriptionJa: '前脛骨筋・長母趾伸筋（スネ前面）の緊張をゆるめる。スキー・スノーボードのブーツ姿勢で特に疲労しやすい部位。',
     image: placeholder,
     durationSeconds: 30,
     difficulty: 1,
@@ -598,7 +598,7 @@ export const ALL_STRETCHES: Stretch[] = [
     difficulty: 1,
     bodyParts: ['leg'],
     scenes: ['home', 'serious'],
-    steps: ['椅子に座り、右足を左のもも（膝付近）の上に乗せる', '右手で足趾（特に親指）をつかみ、足の甲方向（背屈）に反らせる', '足の裏（かかとから指の付け根）の張りを感じながら20秒キープ', '朝の最初の一歩前に行うと特に効果的', '反対側も同様に'],
+    steps: ['椅子に座り、右足を左のもも（膝付近）の上に乗せる', '右手で足趾（特に親指）をつかみ、足の甲方向（背屈）に反らせる', '足の裏（かかとから指の付け根）の張りを感じながら20秒キープ', '朝の最初の一歩前のケアにおすすめ', '反対側も同様に'],
     recommendedSets: 2,
     sport: ['hiking', 'dance', 'running', 'gymnastics'],
   },
