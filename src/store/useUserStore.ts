@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { BodyPart, Scene, SchedulerConfig, UserProfile } from '../types';
+import { getLocalDateString } from '../utils/date';
 
 interface DailyProgress {
   date: string;
@@ -55,7 +56,7 @@ export const useUserStore = create<UserStore>()(
       completeOnboarding: () => set({ onboardingCompleted: true }),
       markStretchesCompleted: (ids) =>
         set((state) => {
-          const today = new Date().toISOString().slice(0, 10);
+          const today = getLocalDateString();
           const existing =
             state.dailyProgress.date === today ? state.dailyProgress.completedStretchIds : [];
           const merged = Array.from(new Set([...existing, ...ids]));
@@ -65,7 +66,7 @@ export const useUserStore = create<UserStore>()(
         set({ lastStretchCompletedAt: new Date().toISOString() }),
       recordSkip: () =>
         set(() => {
-          const today = new Date().toISOString().slice(0, 10);
+          const today = getLocalDateString();
           return {
             dailySkipUsed: true,
             lastSkipDate: today,

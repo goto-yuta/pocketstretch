@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react-native';
 import { useUserStore } from '../src/store/useUserStore';
+import { getLocalDateString } from '../src/utils/date';
 
 describe('useUserStore', () => {
   beforeEach(() => {
@@ -77,7 +78,7 @@ describe('markStretchesCompleted', () => {
   it('sets date to today', () => {
     const { result } = renderHook(() => useUserStore());
     act(() => result.current.markStretchesCompleted(['chin-tuck']));
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     expect(result.current.dailyProgress.date).toBe(today);
   });
 });
@@ -140,7 +141,7 @@ describe('recordSkip', () => {
     const { result } = renderHook(() => useUserStore());
     act(() => result.current.recordSkip());
     expect(result.current.dailySkipUsed).toBe(true);
-    expect(result.current.lastSkipDate).toBe(new Date().toISOString().slice(0, 10));
+    expect(result.current.lastSkipDate).toBe(getLocalDateString());
   });
   it('sets lastStretchCompletedAt to reset the interval timer', () => {
     const before = Date.now();

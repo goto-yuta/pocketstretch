@@ -8,6 +8,7 @@ import { scheduleNextStretchNotification } from '../notifications';
 import { useUserStore } from '../store/useUserStore';
 import { RootStackParamList } from '../types';
 import { getPrescription } from '../utils/prescription';
+import { getLocalDateString } from '../utils/date';
 import { Colors, Radius, Shadow } from '../styles/tokens';
 import PrimaryButton from '../components/PrimaryButton';
 
@@ -18,7 +19,7 @@ export default function GateScreen() {
   const { bodyParts, scene, sport, schedulerConfig, lastStretchCompletedAt, dailySkipUsed, lastSkipDate, recordSkip } = useUserStore();
   const [skipVisible, setSkipVisible] = useState(false);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getLocalDateString();
   const effectiveSkipUsed = dailySkipUsed && lastSkipDate === today;
 
   useEffect(() => {
