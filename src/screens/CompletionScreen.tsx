@@ -9,6 +9,7 @@ import { RootStackParamList } from '../types';
 import { ALL_STRETCHES } from '../data/stretches';
 import { Colors, Radius, Shadow } from '../styles/tokens';
 import PrimaryButton from '../components/PrimaryButton';
+import { streakMessage } from '../utils/streak';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, 'Completion'>;
@@ -16,7 +17,7 @@ type Route = RouteProp<RootStackParamList, 'Completion'>;
 export default function CompletionScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { markStretchesCompleted, recordStretchCompletion, schedulerConfig } = useUserStore();
+  const { schedulerConfig, currentStreak, totalSessions } = useUserStore();
 
   const ids = route.params.completedStretchIds;
 
@@ -29,8 +30,6 @@ export default function CompletionScreen() {
   }, [ids]);
 
   useEffect(() => {
-    markStretchesCompleted(ids);
-    recordStretchCompletion();
     scheduleNextStretchNotification(new Date().toISOString(), schedulerConfig).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -39,7 +38,8 @@ export default function CompletionScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.emoji}>🎉</Text>
       <Text style={styles.title}>お疲れ様でした！</Text>
-      <Text style={styles.sub}>継続することが大切です</Text>
+      <Text style={styles.streak}>🔥 {currentStreak}日連続</Text>
+      <Text style={styles.sub}>{streakMessage(currentStreak)}</Text>
       <View style={styles.statsRow}>
         <View style={[styles.statCard, Shadow.card]}>
           <Text style={styles.statValue}>{ids.length}</Text>
@@ -48,6 +48,10 @@ export default function CompletionScreen() {
         <View style={[styles.statCard, Shadow.card]}>
           <Text style={styles.statValue}>{totalMin}分</Text>
           <Text style={styles.statLabel}>セッション</Text>
+        </View>
+        <View style={[styles.statCard, Shadow.card]}>
+          <Text style={styles.statValue}>{totalSessions}回</Text>
+          <Text style={styles.statLabel}>累計</Text>
         </View>
       </View>
       <PrimaryButton
@@ -66,11 +70,14 @@ const styles = StyleSheet.create({
   sub: { fontSize: 15, color: Colors.textMuted, textAlign: 'center', marginBottom: 32 },
   statsRow: { flexDirection: 'row', gap: 14, marginBottom: 40 },
   statCard: {
+    flex: 1,
+    minWidth: 0,
     backgroundColor: Colors.bgCard, borderRadius: Radius.md,
-    paddingVertical: 16, paddingHorizontal: 24,
+    paddingVertical: 16, paddingHorizontal: 12,
     alignItems: 'center', borderWidth: 1, borderColor: Colors.border,
   },
   statValue: { fontSize: 22, fontWeight: '700', color: Colors.primary },
   statLabel: { fontSize: 12, color: Colors.textMuted, marginTop: 4 },
   button: { width: '100%' },
+  streak: { fontSize: 20, fontWeight: '700', color: Colors.primaryDeep, marginBottom: 4 },
 });
