@@ -100,7 +100,7 @@ const BODY_PRESCRIPTION: Record<BodyPart, string[]> = {
   back:     ['thoracic-open-book', 'cat-cow', 'quadratus-lumborum-stretch'],
   hip:      ['piriformis-stretch', 'iliopsoas-stretch', 'butterfly'],
   leg:      ['hamstring', 'calf', 'it-band-stretch'],
-  arm:      ['bicep-wall-stretch', 'tricep-overhead-stretch', 'forearm-rotator-stretch'],
+  arm:      ['bicep-wall-stretch', 'tricep-overhead-stretch', 'forearm-rotator-stretch', 'wrist-extensor-stretch', 'wrist-flexor-stretch'],
   chest:    ['doorway-chest-stretch', 'pec-wall-stretch', 'chest-open'],
   core:     ['dead-bug-stretch', 'seated-trunk-rotation', 'plank-hold'],
 };
